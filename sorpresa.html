@@ -24,10 +24,32 @@
       background-size: 120px 120px, 180px 180px; background-position: 0 0, 40px 40px; mix-blend-mode: screen;
     }
 
+    /* Canvas de corazones (no bloquea los clics) */
+    #lovefx{
+      position:fixed; inset:0; width:100vw; height:100vh;
+      pointer-events:none; z-index:5;
+    }
+
+    /* Frases flotantes al hacer clic */
+    .phrase{
+      position:fixed; left:0; top:0; transform:translate(-50%,-50%);
+      font-family:"Great Vibes", "Sacramento", cursive;
+      font-size: clamp(22px, 4vw, 42px);
+      color:#ff2d6a; text-shadow: 0 10px 26px rgba(255,45,106,.35);
+      opacity:0; pointer-events:none; z-index:6;
+      animation: floatFade 1.6s ease forwards;
+    }
+    @keyframes floatFade{
+      0%{ transform:translate(-50%,-50%) translateY(10px) scale(.9); opacity:0; }
+      10%{ opacity:1; }
+      80%{ opacity:1; }
+      100%{ transform:translate(-50%,-50%) translateY(-60px) scale(1.05); opacity:0; }
+    }
+
     .container{max-width:1000px; margin:0 auto; padding: clamp(16px, 4vw, 32px)}
     header{ text-align:center; padding-top: 24px; }
     header h1{
-      margin:0; font-weight:900; letter-spacing:.5px; color:#b72c7e; 
+      margin:0; font-weight:900; letter-spacing:.5px; color:#b72c7e;
       text-shadow: 0 10px 30px rgba(183,44,126,.25);
       font-size: clamp(36px, 6vw, 64px);
     }
@@ -45,31 +67,7 @@
     .section{ margin: 36px auto 18px; width:min(95vw, 900px); background: radial-gradient(120% 140% at 20% 10%, #ffe5f1, #f8c5e4 60%, #e6a5da 100%); padding: clamp(16px, 3.2vw, 28px); border-radius: 30px; color:#5a2452; box-shadow: 0 26px 50px rgba(122,28,107,.25); }
     .section h3{ margin: 6px 6px 18px; font-size: clamp(24px, 5vw, 42px); color:#fff; text-align:center; text-shadow: 0 10px 26px rgba(0,0,0,.25); }
 
-    /* 3D carrusel */
-    .carousel3d{
-      position:relative; width:100%; height:380px; perspective:1200px; margin-top:24px; overflow:hidden;
-    }
-    .carousel-track{
-      width:100%; height:100%; position:absolute; transform-style:preserve-3d; animation: rotate 20s infinite linear;
-    }
-    .slide{
-      position:absolute; top:50%; left:50%; width:240px; height:320px; margin:-160px -120px; border-radius:22px; overflow:hidden;
-      box-shadow: 0 18px 36px rgba(0,0,0,.22);
-    }
-    .slide img{ width:100%; height:100%; object-fit:cover; }
-    .slide figcaption{ position:absolute; left:0; right:0; bottom:0; padding:10px 12px; background:linear-gradient(180deg,transparent,rgba(0,0,0,.55)); color:#fff; font-weight:700; text-align:center; }
-
-    @keyframes rotate{
-      from{ transform:rotateY(0deg); }
-      to{ transform:rotateY(-360deg); }
-    }
-
-    .back{ position:fixed; top:14px; left:14px; border:0; border-radius:999px; width:42px; height:42px; cursor:pointer; background:rgba(255,255,255,.85); color:#b72c7e; font-weight:900; box-shadow: 0 8px 18px rgba(0,0,0,.18); }
-    .hint{ text-align:center; margin: 10px 0 30px; color:#8d427e }
-
-    @media (max-width:720px){ .grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-      
-    /* === Coverflow 3D (override/new) === */
+    /* 3D coverflow (deck) */
     .stage{ position:relative; perspective: 1200px; overflow:hidden; padding: 22px 0 34px; }
     .deck{ position:relative; height: 360px; transform-style: preserve-3d; }
     .photo{ position:absolute; top:0; left:50%; width: 240px; height: 340px; border-radius:24px; overflow:hidden; box-shadow: 0 18px 38px rgba(0,0,0,.28);
@@ -81,7 +79,9 @@
     .photo[aria-current="true"]{ filter: saturate(1.1) brightness(1); }
     .nav{ display:flex; justify-content:center; gap:14px; margin-top:6px; }
     .nav button{ border:0; background:rgba(255,255,255,.9); color:#b72c7e; width:42px; height:42px; border-radius:12px; box-shadow:0 10px 18px rgba(0,0,0,.18); cursor:pointer; font-weight:900; }
-  
+
+    .back{ position:fixed; top:14px; left:14px; border:0; border-radius:999px; width:42px; height:42px; cursor:pointer; background:rgba(255,255,255,.85); color:#b72c7e; font-weight:900; box-shadow: 0 8px 18px rgba(0,0,0,.18); z-index:7; }
+
     .home-btn{
       display:inline-block; padding:10px 22px; font-size:1rem; font-weight:700; color:#fff;
       background: linear-gradient(135deg, #ff4f87, #ff2d6a);
@@ -89,28 +89,34 @@
       transition: transform .25s, box-shadow .25s;
     }
     .home-btn:hover{ transform: translateY(-3px) scale(1.05); box-shadow:0 12px 22px rgba(0,0,0,.25); }
+
+    @media (max-width:720px){ .grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   </style>
 </head>
 <body>
 
-     <audio id="bg-music" autoplay loop>
-  <source src="ocean.mp3" type="audio/mpeg">
-  Tu navegador no soporta audio HTML5.
-</audio>
+  <!-- Música -->
+  <audio id="bg-music" autoplay loop>
+    <source src="ocean.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
 
-<a href="inicio.html" class="back" aria-label="Volver">⟵</a>
+  <!-- Canvas de corazones -->
+  <canvas id="lovefx"></canvas>
+
+  <!-- Volver -->
+  <a href="inicio.html" class="back" aria-label="Volver">⟵</a>
+
   <div class="container">
-
     <header>
       <h1>Nuestro Tiempo <span>Juntos</span></h1>
       <p class="hint">Desde aquel día tan especial bebé💖</p>
       <h2>04-04-2025</h2>
-
     </header>
 
     <section class="hero">
       <div class="avatar">
-        <img src="img/1.jpeg" />
+        <img src="img/1.jpeg" alt="Nosotros" />
       </div>
       <div class="timer-card">
         <div class="grid" id="timer">
@@ -128,34 +134,32 @@
       <h3 style="color: #5a2452;">Los recuerdos de este mes</h3>
       <div class="stage">
         <div class="deck" id="deck">
-          <figure class="photo" data-caption="Concierto"><img src="img/2.jpeg" alt="Atardecer"></figure>
-          <figure class="photo" data-caption="Camino a Puerto Malabrigo"><img src="img/3.jpeg" alt="Manos"></figure>
-          <figure class="photo" data-caption="En la playa"><img src="img/4.jpeg" alt="Caminata"></figure>
+          <figure class="photo" data-caption="Concierto"><img src="img/2.jpeg" alt="Concierto"></figure>
+          <figure class="photo" data-caption="Camino a Puerto Malabrigo"><img src="img/3.jpeg" alt="Camino a Puerto Malabrigo"></figure>
+          <figure class="photo" data-caption="En la playa"><img src="img/4.jpeg" alt="En la playa"></figure>
           <figure class="photo" data-caption="Tú y yo"><img src="img/5.jpeg" alt="Tú y yo"></figure>
-          <figure class="photo" data-caption="Con besito jasj"><img src="img/6.jpeg" alt="Risas"></figure>
-         <figure class="photo" data-caption="Un sábado juntos"><img src="img/7.jpeg" alt="Risas"></figure>
-           <figure class="photo" data-caption="El día de mi cumple, gracias por todo mi amor"><img src="img/8.jpeg" alt="Risas"></figure>
-           <figure class="photo" data-caption="De camino al gallito ciego"><img src="img/9.jpeg" alt="Risas"></figure>
-                      <figure class="photo" data-caption="Almorzando"><img src="img/12.jpeg" alt="Risas"></figure>
-
-           <figure class="photo" data-caption="Ya allí en el lugar"><img src="img/10.jpeg" alt="Risas"></figure>
-           <figure class="photo" data-caption="Otra foto allí con mi amorcito"><img src="img/11.jpeg" alt="Risas"></figure>
-
+          <figure class="photo" data-caption="Con besito jasj"><img src="img/6.jpeg" alt="Con besito jasj"></figure>
+          <figure class="photo" data-caption="Un sábado juntos"><img src="img/7.jpeg" alt="Un sábado juntos"></figure>
+          <figure class="photo" data-caption="El día de mi cumple, gracias por todo mi amor"><img src="img/8.jpeg" alt="Cumple"></figure>
+          <figure class="photo" data-caption="De camino al gallito ciego"><img src="img/9.jpeg" alt="Gallito ciego"></figure>
+          <figure class="photo" data-caption="Almorzando"><img src="img/12.jpeg" alt="Almorzando"></figure>
+          <figure class="photo" data-caption="Ya allí en el lugar"><img src="img/10.jpeg" alt="Ya allí"></figure>
+          <figure class="photo" data-caption="Otra foto allí con mi amorcito"><img src="img/11.jpeg" alt="Otra foto allí"></figure>
         </div><br>
         <div class="nav">
           <button id="prev" aria-label="Anterior">⟵</button>
           <button id="next" aria-label="Siguiente">⟶</button>
         </div><br>
-            <div style="text-align:center; margin-bottom:20px;">
-      <a href="index.html" class="home-btn">Haz click amor jajs</a>
-    </div>
+        <div style="text-align:center; margin-bottom:20px;">
+          <a href="index.html" class="home-btn">Haz click amor jajs</a>
+        </div>
       </div>
     </section>
   </div>
 
   <script>
+    // ====== TIMER ======
     const start = new Date(2025, 3, 4, 0, 0, 0);
-
     const ids = ['years','months','days','hours','minutes','seconds'];
     const els = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
@@ -180,7 +184,7 @@
     function loop(){ setTimeout(tick, 250); }
     tick();
 
-    // === Coverflow 3D ===
+    // ====== COVERFLOW 3D ======
     const deck = document.getElementById('deck');
     const photos = Array.from(deck.querySelectorAll('.photo'));
     let current = Math.floor(photos.length/2);
@@ -213,15 +217,145 @@
     deck.addEventListener('pointerdown', e=>{ sx = e.clientX; deck.setPointerCapture(e.pointerId); });
     deck.addEventListener('pointerup',   e=>{ if(sx===null) return; const dx = e.clientX - sx; if(Math.abs(dx) > 40){ go(current - Math.sign(dx)); } sx=null; deck.releasePointerCapture(e.pointerId); });
     deck.addEventListener('wheel', e=>{ e.preventDefault(); if(e.deltaY>0 || e.deltaX>0) go(current+1); else go(current-1); }, {passive:false});
+
+    // ====== CORAZONES FLOTANTES + FRASES EN CLIC ======
+    const canvas = document.getElementById('lovefx');
+    const ctx = canvas.getContext('2d');
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let W = 0, H = 0;
+    let particles = [];
+
+    function resize(){
+      W = canvas.width  = Math.floor(innerWidth * DPR);
+      H = canvas.height = Math.floor(innerHeight * DPR);
+      canvas.style.width  = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+    }
+    resize(); addEventListener('resize', resize);
+
+    // Dibuja un corazón en (x,y) a escala s
+    function drawHeart(x, y, s, color){
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(s, s);
+      ctx.beginPath();
+      ctx.moveTo(0, -2);
+      ctx.bezierCurveTo(2, -5, 7, -3, 7, 1);
+      ctx.bezierCurveTo(7, 5, 2, 8, 0, 11);
+      ctx.bezierCurveTo(-2, 8, -7, 5, -7, 1);
+      ctx.bezierCurveTo(-7, -3, -2, -5, 0, -2);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.shadowColor = 'rgba(255, 0, 83, .35)';
+      ctx.shadowBlur = 12 * DPR;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    const HEART_SETTINGS = {
+    spawnChance: 0.02,   
+    sizeMin: 2,          
+    sizeMax: 5           
+    };
+
+function spawnFloatingHeart(){
+  // Ahora nacen en cualquier parte de la pantalla (no solo abajo)
+  const x = Math.random() * W;
+  const y = Math.random() * H;
+
+  // Tamaño más pequeño y variado
+  const s = (HEART_SETTINGS.sizeMin + Math.random() * (HEART_SETTINGS.sizeMax - HEART_SETTINGS.sizeMin)) * DPR;
+
+  // Velocidades suaves para que “floten” y cubran más área
+  const vx = (Math.random() - 0.5) * 0.25 * DPR;    // deriva horizontal sutil
+  const vy = (Math.random() * -0.6 - 0.15) * DPR;   // mayormente hacia arriba
+
+  particles.push({
+    x, y, vx, vy, s,
+    life: 600 + Math.random() * 500,
+    color: `hsl(${330 + Math.random()*30} 90% ${60+Math.random()*20}%)`,
+    rot: Math.random() * Math.PI * 2,
+    vr: (Math.random() - 0.5) * 0.02
+  });
+}
+
+
+function burst(x, y, n = 60){
+  const cx = x * DPR, cy = y * DPR;
+  for (let i = 0; i < n; i++){
+    const a  = Math.random() * Math.PI * 2;
+    const sp = (1.0 + Math.random() * 2.0) * DPR;    // velocidad moderada
+    const s  = (0.5 + Math.random() * 1.2) * DPR;     // ★ corazones más pequeños (antes eran ~3–13)
+
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(a) * sp,
+      vy: Math.sin(a) * sp - 0.4 * DPR,
+      s,                                                   // tamaño pequeño
+      life: 180 + Math.random() * 120,
+      color: `hsl(${330 + Math.random() * 30} 90% ${55 + Math.random() * 20}%)`,
+      rot: Math.random() * Math.PI * 2,
+      vr: (Math.random() - 0.5) * 0.15
+    });
+  }
+}
+
+
+    function animate(){
+      ctx.clearRect(0,0,W,H);
+      // añadir flotantes suaves
+        if (Math.random() < HEART_SETTINGS.spawnChance) spawnFloatingHeart();
+
+      particles.forEach(p=>{
+        p.vy += 0.004*DPR;     // leve gravedad
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.rot+= p.vr;
+        p.life--;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        drawHeart(0,0,p.s, p.color);
+        ctx.restore();
+      });
+      particles = particles.filter(p => p.life>0 && p.y > -40*DPR && p.x>-40*DPR && p.x<W+40*DPR);
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Frases al hacer clic
+    const frases = [
+      "Te amo", "Mi vida", "Mi cielo", "Mi princesa", "Siempre tú",
+      "Contigo todo", "Eres mi paz", "Para siempre", "Tú y yo", "Amor eterno"
+    ];
+
+    function showPhrase(x,y){
+      const span = document.createElement('span');
+      span.className = 'phrase';
+      span.textContent = frases[Math.floor(Math.random()*frases.length)];
+      span.style.left = x + 'px';
+      span.style.top  = y + 'px';
+      span.style.transform += ` rotate(${(-10 + Math.random()*20)}deg)`;
+      document.body.appendChild(span);
+      span.addEventListener('animationend', ()=> span.remove());
+    }
+
+    // Click global: estallido + frase + (desbloqueo móvil para música si estaba pausada)
+    document.addEventListener('click', (e)=>{
+      burst(e.clientX, e.clientY, 60);
+      showPhrase(e.clientX, e.clientY);
+      const audio = document.getElementById('bg-music');
+      if (audio && audio.paused) audio.play().catch(()=>{});
+    }, {passive:true});
   </script>
 </body>
 
+<!-- Fallback para móviles: arranca música tras el primer toque -->
 <script>
   document.addEventListener('click', () => {
     const audio = document.getElementById('bg-music');
-    if (audio.paused) {
-      audio.play();
-    }
+    if (audio && audio.paused) { audio.play().catch(()=>{}); }
   }, { once: true });
 </script>
 </html>
