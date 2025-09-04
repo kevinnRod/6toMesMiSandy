@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Para Ti, Mi Princesa</title>
+  <title>Para ti, Mi Sandy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800;900&family=Sacramento&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -153,37 +153,38 @@
     }
     .footer-note a{ color:#ff2d55; text-decoration:none; font-weight:600; }
         
-.home-btn{
+    .home-btn{
       display:inline-block; padding:10px 22px; font-size:1rem; font-weight:700; color:#fff;
       background: linear-gradient(135deg, #ff4f87, #ff2d6a);
       border-radius: 25px; text-decoration:none; box-shadow:0 8px 18px rgba(0,0,0,.18);
       transition: transform .25s, box-shadow .25s;
     }
     .home-btn:hover{ transform: translateY(-3px) scale(1.05); box-shadow:0 12px 22px rgba(0,0,0,.25); }
-  /* Frases flotantes al hacer clic */
-.phrase{
-  position:fixed; left:0; top:0; transform:translate(-50%,-50%);
-  font-family:"Great Vibes","Sacramento",cursive;
-  font-size:clamp(22px,4vw,42px);
-  color:#ff2d55; text-shadow:0 10px 26px rgba(255,45,106,.35);
-  opacity:0; pointer-events:none; z-index:11;
-  animation: floatFade 1.6s ease forwards;
-}
-@keyframes floatFade{
-  0%{ transform:translate(-50%,-50%) translateY(10px) scale(.9); opacity:0; }
-  10%{ opacity:1; }
-  80%{ opacity:1; }
-  100%{ transform:translate(-50%,-50%) translateY(-60px) scale(1.05); opacity:0; }
-}
 
+    /* Frases flotantes al hacer clic */
+    .phrase{
+      position:fixed; left:0; top:0; transform:translate(-50%,-50%);
+      font-family:"Great Vibes","Sacramento",cursive;
+      font-size:clamp(22px,4vw,42px);
+      color:#ff2d55; text-shadow:0 10px 26px rgba(255,45,106,.35);
+      opacity:0; pointer-events:none; z-index:11;
+      animation: floatFade 1.6s ease forwards;
+    }
+    @keyframes floatFade{
+      0%{ transform:translate(-50%,-50%) translateY(10px) scale(.9); opacity:0; }
+      10%{ opacity:1; }
+      80%{ opacity:1; }
+      100%{ transform:translate(-50%,-50%) translateY(-60px) scale(1.05); opacity:0; }
+    }
   </style>
 </head>
-
-<audio id="bg-music" autoplay loop>
-  <source src="ordinary.mp3" type="audio/mpeg">
-  Tu navegador no soporta audio HTML5.
-</audio>
 <body>
+  <!-- Música (si la usas). En móvil se desbloquea con el primer toque más abajo -->
+  <audio id="bg-music" autoplay loop>
+    <source src="ordinary.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
+
   <div class="floaters" id="floaters"></div>
   <canvas id="burst"></canvas>
 
@@ -193,7 +194,7 @@
     </div>
     <div class="hero-inner">
       <h1 class="title-gradient">Para ti mi Sandy</h1>
-      <p class="subtitle">Haz clic bebé</p>
+      <p class="subtitle">Abre la carta bebé</p>
 
       <div class="envelope-wrap">
         <div class="envelope" id="envelope" aria-label="Abrir carta" role="button" tabindex="0">
@@ -215,47 +216,81 @@
   <div class="modal" id="modal">
     <button class="close" id="close" aria-label="Cerrar">✕</button>
     <article class="letter" aria-live="polite">
-      <h2>Mi Princesa</h2>
-      <p>Eres la luz que ilumina mis días<br/>y la razón de mi sonrisa eterna.</p>
-      <p>Contigo, cada momento es mágico<br/>y mi corazón late más fuerte.</p>
-      <p>Tu presencia transforma lo ordinario en extraordinario,<br/>y tu risa es mi melodía favorita.</p>
-      <p>Gracias por existir, por tu ternura y tu fuerza.<br/>Hoy y siempre, mi corazón es tuyo.</p>
-      <p style="margin-top:34px">Con todo mi amor 💖</p>
+      <h2>Mi Sandy</h2>
+      <p>Todas las palabras que pueda decir se quedan cortas ante lo que realmente siento por ti, mi amor.</p>
+
+  <p>Estoy profundamente agradecido contigo por enseñarme tantas cosas,  
+     por soportarme en mis días difíciles, por estar siempre conmigo,  
+     y por quererme a pesar de todo.</p>
+
+  <p>Gracias por mostrarme lo bonito que puede ser la vida,  
+     por absolutamente todo lo que haces por mí.  
+     Siempre estaré agradecido contigo, amor.</p>
+
+  <p>Eres el amor de mi vida, y siempre te lo voy a repetir,  
+     hasta que seamos viejitos y sigamos caminando de la mano.</p>
+
+  <p>Recuerdo con tanto cariño la primera vez que nos saludamos…  
+     yo estaba super nervioso, y aun así, en ese instante supe  
+     que algo muy especial estaba empezando en mi vida.</p>
+
+  <p>Quiero estar contigo toda mi vida, mi Sandy ❤️.  
+     Estos 5 meses han sido los más bonitos y especiales de mi vida,  
+     y lo único que deseo es que sigamos para siempre juntos,  
+     construyendo sueños, compartiendo risas y superando todo de la mano.</p>
+
+  <p>Te amo muchísimo, mi amor,  
+     te amo 3 millones, bebé ❤️.  
+     Te amo con todo lo que soy, mi Sandy 💕</p>
+      <p id="fecha-carta" style="font-size:16px; opacity:.7; margin-top:18px;"></p>
+    <p style="margin-top:10px">— Kevin</p>
+
     </article>
   </div>
 
   <script>
+    (function(){
+  const el = document.getElementById('fecha-carta');
+  if(!el) return;
+  const fecha = new Date();
+  const f = fecha.toLocaleDateString('es-PE', { day:'2-digit', month:'long', year:'numeric' });
+  el.textContent = `Trujillo, ${f}`;
+})();
+    // ===== Corazones flotantes de fondo (DOM) =====
     const floaters = document.getElementById('floaters');
-    const HEARTS = 20; // cantidad base
     const vw = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const vh = () => Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 
-function spawnFloatingHearts(){
-  floaters.innerHTML = '';
-  const COUNT = 16; // antes HEARTS=20
-  for(let i=0;i<COUNT;i++){
-    const h = document.createElement('div');
-    h.className = 'heart';
-    const size = 15 + Math.random()*12; // ★ 10–22px (más pequeños)
-    h.style.width = size+'px';
-    h.style.left = Math.random()*vw()+'px';
-    h.style.top  = Math.random()*vh()+'px';   // ★ ahora nacen en toda la pantalla
-    const dur = 20 + Math.random()*18;        // animación más pausada
-    const delay = -Math.random()*dur;
-    h.style.animation = `drift ${dur}s linear ${delay}s infinite`;
-    h.style.opacity = 0.40 + Math.random()*0.35;
-    floaters.appendChild(h);
-  }
-}
-
+    function spawnFloatingHearts(){
+      floaters.innerHTML = '';
+      const COUNT = 16; // más liviano
+      for(let i=0;i<COUNT;i++){
+        const h = document.createElement('div');
+        h.className = 'heart';
+        const size = 15 + Math.random()*12; // 15–27px
+        h.style.width = size+'px';
+        h.style.left = Math.random()*vw()+'px';
+        h.style.top  = Math.random()*vh()+'px'; // por toda la pantalla
+        const dur = 20 + Math.random()*18;
+        const delay = -Math.random()*dur;
+        h.style.animation = `drift ${dur}s linear ${delay}s infinite`;
+        h.style.opacity = 0.40 + Math.random()*0.35;
+        floaters.appendChild(h);
+      }
+    }
     spawnFloatingHearts();
     window.addEventListener('resize', spawnFloatingHearts);
 
+    // ===== Canvas de corazones (clic/estallido) =====
     const burst = document.getElementById('burst');
     const ctx = burst.getContext('2d');
     let particles = [];
+    let animating=false;
 
-    function resizeCanvas(){ burst.width = window.innerWidth; burst.height = window.innerHeight; }
+    function resizeCanvas(){
+      burst.width = window.innerWidth;
+      burst.height = window.innerHeight;
+    }
     resizeCanvas(); window.addEventListener('resize', resizeCanvas);
 
     function heartPath(ctx, x, y, s){
@@ -270,31 +305,29 @@ function spawnFloatingHearts(){
     }
 
     function createBurst(x, y){
-  const N = 60; // puedes bajar a 40 si quieres aún más sutil
-  for(let i=0;i<N;i++){
-    const angle = (Math.PI*2) * Math.random();
-    const speed = (1.0 + Math.random()*2.2); // un poco más suave
-    particles.push({
-      x, y,
-      vx: Math.cos(angle)*speed,
-      vy: Math.sin(angle)*speed - (0.6 + Math.random()*0.6),
-      life: 160 + Math.random()*120,
-      size: (2 + Math.random()*4),            // ★ corazones más pequeños
-      rot: Math.random()*Math.PI*2,
-      vr: (Math.random()-.5)*0.18,
-      color: `hsl(${330 + Math.random()*30} 90% ${60+Math.random()*20}%)`
-    });
-  }
-  if(!animating) animate();
-}
+      const N = 60; // puedes bajar a 40 si quieres más sutil
+      for(let i=0;i<N;i++){
+        const angle = (Math.PI*2) * Math.random();
+        const speed = (1.0 + Math.random()*2.2);
+        particles.push({
+          x, y,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed - (0.6 + Math.random()*0.6),
+          life: 160 + Math.random()*120,
+          size: (2 + Math.random()*4),   // corazones pequeños
+          rot: Math.random()*Math.PI*2,
+          vr: (Math.random()-.5)*0.18,
+          color: `hsl(${330 + Math.random()*30} 90% ${60+Math.random()*20}%)`
+        });
+      }
+      if(!animating) animate();
+    }
 
-
-    let animating=false;
     function animate(){
       animating=true;
       ctx.clearRect(0,0,burst.width, burst.height);
       particles.forEach(p=>{
-        p.vy += 0.05; // gravedad
+        p.vy += 0.05;
         p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life--;
         ctx.save();
         ctx.translate(p.x, p.y); ctx.rotate(p.rot);
@@ -306,6 +339,7 @@ function spawnFloatingHearts(){
       if(particles.length){ requestAnimationFrame(animate); } else { animating=false; }
     }
 
+    // ===== Modal & Sobre =====
     const modal = document.getElementById('modal');
     const closeBtn = document.getElementById('close');
     const envelope = document.getElementById('envelope');
@@ -314,6 +348,7 @@ function spawnFloatingHearts(){
       if(envelope.classList.contains('open')) return;
       const rect = envelope.getBoundingClientRect();
       envelope.classList.add('open');
+      // Estallido desde el sello
       const x = rect.left + rect.width/2; const y = rect.top + rect.height*0.46;
       createBurst(x, y);
       setTimeout(()=> modal.classList.add('show'), 650);
@@ -324,51 +359,47 @@ function spawnFloatingHearts(){
       setTimeout(()=> envelope.classList.remove('open'), 200);
     }
 
-    envelope.addEventListener('click', openLetter);
+    // Evita el bubble para que el clic en el sobre NO dispare el listener global
+    envelope.addEventListener('click', (e)=>{ e.stopPropagation(); openLetter(); });
     envelope.addEventListener('keypress', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openLetter(); }});
-    closeBtn.addEventListener('click', closeLetter);
+    closeBtn.addEventListener('click', (e)=>{ e.stopPropagation(); closeLetter(); });
     modal.addEventListener('click', e=>{ if(e.target === modal) closeLetter(); });
-    
-    // Frases cortas románticas
-const frases = [
-  "Te amo","Mi vida","Mi cielo","Mi princesa","Siempre tú",
-  "Contigo todo","Eres mi paz","Para siempre","Tú y yo","Amor eterno"
-];
 
-function showPhrase(x,y){
-  const span = document.createElement('span');
-  span.className = 'phrase';
-  span.textContent = frases[Math.floor(Math.random()*frases.length)];
-  span.style.left = x + 'px';
-  span.style.top  = y + 'px';
-  span.style.transform += ` rotate(${(-10 + Math.random()*20)}deg)`;
-  document.body.appendChild(span);
-  span.addEventListener('animationend', ()=> span.remove());
-}
+    // ===== Frases románticas =====
+    const frases = [
+      "Te amo","Mi vida","Mi cielo","Mi princesa","Siempre tú",
+      "Contigo todo","Eres mi paz","Para siempre","Tú y yo","Amor eterno"
+    ];
 
-// Estallido + frase en clic, evitando duplicados en sobre/carta/cerrar/botón regresar
-document.addEventListener('click', (e)=>{
-  if (
-    e.target.closest('.envelope') || // el sobre ya dispara createBurst en openLetter()
-    e.target.closest('.letter')   || // dentro de la carta no disparamos
-    e.target.closest('.close')    || // botón cerrar
-    e.target.closest('.home-btn')    // tu botón "Regresar"
-  ) return;
+    function showPhrase(x,y){
+      const span = document.createElement('span');
+      span.className = 'phrase';
+      span.textContent = frases[Math.floor(Math.random()*frases.length)];
+      span.style.left = x + 'px';
+      span.style.top  = y + 'px';
+      span.style.transform += ` rotate(${(-10 + Math.random()*20)}deg)`;
+      document.body.appendChild(span);
+      span.addEventListener('animationend', ()=> span.remove());
+    }
 
-  createBurst(e.clientX, e.clientY);
-  showPhrase(e.clientX, e.clientY);
-}, {passive:true});
+    // ===== Listener global (sin duplicados) =====
+    document.addEventListener('click', (e)=>{
+      if (
+        e.target.closest('.envelope') || // el sobre ya dispara su estallido
+        e.target.closest('.letter')   || // dentro de la carta no disparamos
+        e.target.closest('.close')    || // botón cerrar
+        e.target.closest('.home-btn')    // botón "Regresar"
+      ) return;
 
-  
+      createBurst(e.clientX, e.clientY);
+      showPhrase(e.clientX, e.clientY);
+    }, {passive:true});
+
+    // ===== Desbloqueo de música en móvil (solo 1 vez) =====
+    document.addEventListener('click', () => {
+      const audio = document.getElementById('bg-music');
+      if (audio && audio.paused) audio.play().catch(()=>{});
+    }, { once: true });
   </script>
 </body>
-
-<script>
-  document.addEventListener('click', () => {
-    const audio = document.getElementById('bg-music');
-    if (audio.paused) {
-      audio.play();
-    }
-  }, { once: true });
-</script>
 </html>
