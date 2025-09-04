@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso Especial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .lock {
+      background: #ff4f87;
+      border-radius: 50% 50% 20% 20%;
+      width: 180px;
+      height: 180px;
+      position: relative;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    select {
+      appearance: none;
+      padding: 10px;
+      font-size: 1rem;
+      margin: 0 5px;
+      border-radius: 8px;
+      border: none;
+      text-align: center;
+      background: #fff;
+      color: #ff4f87;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #fff;
+      color: #ff4f87;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #ffe6f0;
+    }
+
+    .hint {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <h1>Ingresa la fecha correcta...</h1>
+
+  <div class="lock" id="lock">
+    <div class="input-row">
+      <select id="day"></select>
+      <select id="month"></select>
+      <select id="year"></select>
+    </div>
+    <button onclick="checkDate()">Desbloquear</button>
+  </div>
+
+  <p class="hint">Ya sabes que fecha ingresar amor</p>
+ <audio id="bg-music" autoplay loop>
+  <source src="sweet.mp3" type="audio/mpeg">
+  Tu navegador no soporta audio HTML5.
+</audio>
+
+
+  <script>
+    // Rellenar selects
+    const daySelect = document.getElementById('day');
+    const monthSelect = document.getElementById('month');
+    const yearSelect = document.getElementById('year');
+
+    for (let d = 1; d <= 31; d++) {
+      daySelect.innerHTML += `<option value="${d}">${d.toString().padStart(2, '0')}</option>`;
+    }
+    for (let m = 1; m <= 12; m++) {
+      monthSelect.innerHTML += `<option value="${m}">${m.toString().padStart(2, '0')}</option>`;
+    }
+    for (let y = 2024; y <= 2030; y++) {
+      yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+    }
+
+    function checkDate() {
+      const day = daySelect.value.padStart(2, '0');
+      const month = monthSelect.value.padStart(2, '0');
+      const year = yearSelect.value;
+
+      const entered = `${day}/${month}/${year.slice(-2)}`; // formato dd/mm/yy
+      const correct = "04/04/25";
+
+      if (entered === correct) {
+        window.location.href = "sorpresa.html"; // redirigir a otra página
+      } else {
+        const lock = document.getElementById('lock');
+        lock.classList.add('shake');
+        setTimeout(() => lock.classList.remove('shake'), 400);
+      }
+    }
+  </script>
+</body>
+
+<script>
+  document.addEventListener('click', () => {
+    const audio = document.getElementById('bg-music');
+    if (audio.paused) {
+      audio.play();
+    }
+  }, { once: true });
+</script>
+</html>
