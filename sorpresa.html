@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Feliz quinto mes amor</title>
+  <title>Nuestro tiempo — dos contadores</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --pink1:#ffd1e3; --pink2:#ffc0d6; --accent:#ff2d6a; --deep:#7a1c6b; --card:#fff5f8;
-    }
+    :root{ --pink1:#ffd1e3; --pink2:#ffc0d6; --accent:#ff2d6a; --deep:#7a1c6b; --card:#fff5f8; --ink:#5a2452; }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -24,338 +22,263 @@
       background-size: 120px 120px, 180px 180px; background-position: 0 0, 40px 40px; mix-blend-mode: screen;
     }
 
-    /* Canvas de corazones (no bloquea los clics) */
-    #lovefx{
-      position:fixed; inset:0; width:100vw; height:100vh;
-      pointer-events:none; z-index:5;
-    }
+    /* Canvas de corazones */
+    #lovefx{ position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:5; }
 
-    /* Frases flotantes al hacer clic */
-    .phrase{
-      position:fixed; left:0; top:0; transform:translate(-50%,-50%);
-      font-family:"Great Vibes", "Sacramento", cursive;
-      font-size: clamp(22px, 4vw, 42px);
-      color:#ff2d6a; text-shadow: 0 10px 26px rgba(255,45,106,.35);
-      opacity:0; pointer-events:none; z-index:6;
-      animation: floatFade 1.6s ease forwards;
-    }
-    @keyframes floatFade{
-      0%{ transform:translate(-50%,-50%) translateY(10px) scale(.9); opacity:0; }
-      10%{ opacity:1; }
-      80%{ opacity:1; }
-      100%{ transform:translate(-50%,-50%) translateY(-60px) scale(1.05); opacity:0; }
-    }
+    .container{max-width:1100px; margin:0 auto; padding: clamp(16px, 4vw, 32px)}
 
-    .container{max-width:1000px; margin:0 auto; padding: clamp(16px, 4vw, 32px)}
-    header{ text-align:center; padding-top: 24px; }
-    header h1{
-      margin:0; font-weight:900; letter-spacing:.5px; color:#b72c7e;
-      text-shadow: 0 10px 30px rgba(183,44,126,.25);
-      font-size: clamp(36px, 6vw, 64px);
+    /* ===== Hero Header mejorado ===== */
+    .hero{ position:relative; text-align:center; padding: clamp(18px,5vw,42px) 0 12px; }
+    .hero h1{
+      --grad: linear-gradient(90deg, #ff4f87 0%, #ff2d6a 40%, #b72c7e 85%);
+      margin:0; font-weight:900; letter-spacing:.6px; font-size: clamp(38px, 7vw, 72px);
+      background: var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      filter: drop-shadow(0 10px 24px rgba(183,44,126,.25));
     }
-    header h1 span{ color:#ff2d6a; }
+    .hero .sub{ margin:.4rem 0 0; font-weight:700; color:var(--ink); opacity:.9 }
 
-    .hero{ margin: 28px auto 24px; display:grid; place-items:center; }
-    .avatar{ width:min(78vw, 360px); aspect-ratio:1; border-radius:999px; overflow:hidden; position:relative; box-shadow: 0 30px 60px rgba(122,28,107,.25); background:#fff; border:10px solid rgba(255,255,255,.8); }
+    /* Bloques con 2 timers */
+    .duo{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap: clamp(16px,3vw,28px); margin: 24px 0; }
+    @media (max-width:860px){ .duo{ grid-template-columns:1fr } }
+
+    .hero-block{ display:flex; flex-direction:column; align-items:center; gap:14px }
+    .hero-title{ margin:0; font-size: clamp(20px, 3.8vw, 28px); color:#b72c7e; text-align:center; font-weight:900 }
+    .hero-date{ margin:0; font-weight:700; color:#9c4d89; text-align:center }
+
+    .avatar{ width:min(78vw, 340px); aspect-ratio:1; border-radius:999px; overflow:hidden; position:relative; box-shadow: 0 30px 60px rgba(122,28,107,.25); background:#fff; border:10px solid rgba(255,255,255,.8); }
     .avatar img, .avatar video{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    .timer-card{ margin-top: 24px; width:min(95vw, 860px); background: var(--card); border-radius: 26px; padding: clamp(12px, 3.5vw, 28px); box-shadow: 0 20px 40px rgba(122,28,107,.18), inset 0 0 0 1px rgba(183,44,126,.08); }
-    .grid{ display:grid; gap: clamp(10px, 2vw, 24px); grid-template-columns: repeat(6, minmax(0, 1fr)); align-items:center; text-align:center; }
-    .unit h2{ margin:0; font-size: clamp(26px, 4.8vw, 44px); color:#ff2d6a; }
+    .timer-card{ width:100%; background: var(--card); border-radius: 26px; padding: clamp(12px, 3.2vw, 24px); box-shadow: 0 20px 40px rgba(122,28,107,.18), inset 0 0 0 1px rgba(183,44,126,.08); }
+    .grid{ display:grid; gap: clamp(10px, 2vw, 20px); grid-template-columns: repeat(6, minmax(0, 1fr)); align-items:center; text-align:center; }
+    .unit h2{ margin:0; font-size: clamp(22px, 4.4vw, 40px); color:var(--accent); }
     .unit small{ display:block; margin-top:4px; font-weight:700; letter-spacing:.8px; color:#9c4d89 }
+    @media (max-width:720px){ .grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
-    .section{ margin: 36px auto 18px; width:min(95vw, 900px); background: radial-gradient(120% 140% at 20% 10%, #ffe5f1, #f8c5e4 60%, #e6a5da 100%); padding: clamp(16px, 3.2vw, 28px); border-radius: 30px; color:#5a2452; box-shadow: 0 26px 50px rgba(122,28,107,.25); }
+    /* ===== Navtabs (encima de Recuerdos) ===== */
+    .tabs-wrap{ display:grid; place-items:center; margin: 6px 0 18px; }
+    .tabs{ display:flex; gap:10px; overflow:auto; padding:8px; width:min(95vw, 1000px); background:rgba(255,255,255,.75); backdrop-filter: blur(8px); border-radius:20px; box-shadow:0 10px 24px rgba(0,0,0,.12), inset 0 0 0 1px rgba(183,44,126,.12); }
+    .tabs::-webkit-scrollbar{ display:none }
+    .tab{ text-decoration:none; color:#b72c7e; font-weight:800; padding:10px 16px; border-radius:999px; border:1px solid transparent; white-space:nowrap; }
+    .tab:hover{ background: rgba(255,255,255,.95) }
+    .tab.is-active{ color:#fff; background: linear-gradient(135deg,#ff4f87,#ff2d6a); box-shadow: 0 10px 18px rgba(183,44,126,.35) }
+
+    .section{ margin: 24px auto 18px; width:min(95vw, 1000px); background: radial-gradient(120% 140% at 20% 10%, #ffe5f1, #f8c5e4 60%, #e6a5da 100%); padding: clamp(16px, 3.2vw, 28px); border-radius: 30px; color:#5a2452; box-shadow: 0 26px 50px rgba(122,28,107,.25); }
     .section h3{ margin: 6px 6px 18px; font-size: clamp(24px, 5vw, 42px); color:#fff; text-align:center; text-shadow: 0 10px 26px rgba(0,0,0,.25); }
 
-    /* 3D coverflow (deck) */
-    .stage{ position:relative; perspective: 1200px; overflow:hidden; padding: 22px 0 34px; }
-    .deck{ position:relative; height: 360px; transform-style: preserve-3d; }
-    .photo{ position:absolute; top:0; left:50%; width: 240px; height: 340px; border-radius:24px; overflow:hidden; box-shadow: 0 18px 38px rgba(0,0,0,.28);
-      transform: translateX(-50%); cursor:pointer; transition: transform .6s cubic-bezier(.2,.8,.2,1), filter .6s; background:#fff; }
-    .photo img{ width:100%; height:100%; object-fit:cover; display:block }
-    .photo::after{ content: attr(data-caption); position:absolute; left:0; right:0; bottom:0; padding:10px 12px; background:linear-gradient(180deg, transparent, rgba(0,0,0,.55)); color:#fff; font-weight:700; }
-    .deck{ --gap: 220px; --angle:  -28deg; --z: 220px; }
-    .photo{ filter: saturate(.8) brightness(.9); }
-    .photo[aria-current="true"]{ filter: saturate(1.1) brightness(1); }
-    .nav{ display:flex; justify-content:center; gap:14px; margin-top:6px; }
-    .nav button{ border:0; background:rgba(255,255,255,.9); color:#b72c7e; width:42px; height:42px; border-radius:12px; box-shadow:0 10px 18px rgba(0,0,0,.18); cursor:pointer; font-weight:900; }
+    /* ===== Carrusel compacto (Scroll-snap) ===== */
+    .carousel{ position:relative; }
+    .snap{ display:flex; gap: clamp(10px, 2vw, 16px); overflow-x:auto; scroll-snap-type:x mandatory; scroll-padding-inline: clamp(10px,2vw,16px); padding: 6px 2px 10px; -webkit-overflow-scrolling: touch; }
+    .snap::-webkit-scrollbar{ display:none }
+    .snap{ scrollbar-width:none }
 
-    .back{ position:fixed; top:14px; left:14px; border:0; border-radius:999px; width:42px; height:42px; cursor:pointer; background:rgba(255,255,255,.85); color:#b72c7e; font-weight:900; box-shadow: 0 8px 18px rgba(0,0,0,.18); z-index:7; }
+    .slide{ position:relative; flex:0 0 auto; width: clamp(220px, 68vw, 420px); aspect-ratio: 4/5; scroll-snap-align:center; border-radius: 22px; overflow:hidden; background:#fff; box-shadow: 0 18px 36px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.5); transform: scale(.96); transition: transform .35s ease, filter .35s ease; filter: saturate(.92) brightness(.98); }
+    .slide.is-active{ transform: scale(1); filter: none; z-index:2 }
+    .slide img{ width:100%; height:100%; object-fit:cover; display:block }
+    .slide figcaption{ position:absolute; left:0; right:0; bottom:0; padding:10px 12px 12px; color:#fff; font-weight:800; text-shadow:0 8px 20px rgba(0,0,0,.6); background: linear-gradient(180deg, transparent, rgba(0,0,0,.6)); }
 
-    .home-btn{
-      display:inline-block; padding:10px 22px; font-size:1rem; font-weight:700; color:#fff;
-      background: linear-gradient(135deg, #ff4f87, #ff2d6a);
-      border-radius: 25px; text-decoration:none; box-shadow:0 8px 18px rgba(0,0,0,.18);
-      transition: transform .25s, box-shadow .25s;
-    }
-    .home-btn:hover{ transform: translateY(-3px) scale(1.05); box-shadow:0 12px 22px rgba(0,0,0,.25); }
+    .c-arrow{ position:absolute; top:50%; transform:translateY(-50%); border:0; background: rgba(255,255,255,.92); color:#b72c7e; width:42px; height:42px; border-radius:14px; box-shadow: 0 12px 24px rgba(0,0,0,.18); cursor:pointer; font-weight:900; z-index:3 }
+    .c-arrow.prev{ left: -6px } .c-arrow.next{ right: -6px }
 
-    @media (max-width:720px){ .grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .c-dots{ display:flex; justify-content:center; gap:10px; padding-top:10px }
+    .c-dot{ width:10px; height:10px; border-radius:999px; background: rgba(255,255,255,.92); box-shadow:0 6px 14px rgba(0,0,0,.18); border: 2px solid rgba(183,44,126,.25); opacity:.6; transform:scale(.9); transition:.25s }
+    .c-dot[aria-current="true"]{ opacity:1; transform:scale(1.15); background:linear-gradient(135deg,#ff4f87,#ff2d6a) }
   </style>
 </head>
 <body>
-
-  <!-- Música -->
   <audio id="bg-music" autoplay loop>
     <source src="ocean.mp3" type="audio/mpeg">
     Tu navegador no soporta audio HTML5.
   </audio>
-
-  <!-- Canvas de corazones -->
   <canvas id="lovefx"></canvas>
-
-  <!-- Volver -->
-  <a href="index.html" class="back" aria-label="Volver">⟵</a>
+  <a href="index.html" class="back" aria-label="Volver" style="position:fixed; top:14px; left:14px; border:0; border-radius:999px; width:42px; height:42px; cursor:pointer; background:rgba(255,255,255,.85); color:#b72c7e; font-weight:900; box-shadow: 0 8px 18px rgba(0,0,0,.18); z-index:7; text-decoration:none; display:grid; place-items:center">⟵</a>
 
   <div class="container">
-    <header>
-      <h1>Nuestro Tiempo <span>Juntos</span></h1>
-      <p class="hint">Desde aquel día tan especial bebé💖</p>
-      <h2>04-04-2025</h2>
+    <header class="hero">
+      <h1 id="main-title">Nuestro tiempo juntos</h1>
+      <p class="sub" id="sub-title">Siempre tú y yo, mi amor 💖</p>
     </header>
 
-    <section class="hero">
-      <div class="avatar">
-        <img src="img/1.jpeg" alt="Nosotros" />
-      </div>
-      <div class="timer-card">
-        <div class="grid" id="timer">
-          <div class="unit"><h2 id="years">0</h2><small>AÑOS</small></div>
-          <div class="unit"><h2 id="months">0</h2><small>MESES</small></div>
-          <div class="unit"><h2 id="days">0</h2><small>DÍAS</small></div>
-          <div class="unit"><h2 id="hours">0</h2><small>HORAS</small></div>
-          <div class="unit"><h2 id="minutes">0</h2><small>MINUTOS</small></div>
-          <div class="unit"><h2 id="seconds">0</h2><small>SEGUNDOS</small></div>
+    <!-- DOS BLOQUES: Enamorados + Conociéndonos (cada fecha solo una vez en su bloque) -->
+    <section class="duo" aria-label="Nuestros dos tiempos">
+      <article class="hero-block" id="block-novios">
+        <h2 class="hero-title">Tiempo de enamorados</h2>
+        <p class="hero-date">Desde <strong>04/04/2025</strong></p>
+        <div class="avatar"><img src="img/1.jpeg" alt="Nosotros — enamorados" /></div>
+        <div class="timer-card">
+          <div class="grid" id="timer-novios">
+            <div class="unit"><h2 id="years-nov">0</h2><small>AÑOS</small></div>
+            <div class="unit"><h2 id="months-nov">0</h2><small>MESES</small></div>
+            <div class="unit"><h2 id="days-nov">0</h2><small>DÍAS</small></div>
+            <div class="unit"><h2 id="hours-nov">00</h2><small>HORAS</small></div>
+            <div class="unit"><h2 id="minutes-nov">00</h2><small>MINUTOS</small></div>
+            <div class="unit"><h2 id="seconds-nov">00</h2><small>SEGUNDOS</small></div>
+          </div>
         </div>
-      </div>
+      </article>
+
+      <article class="hero-block" id="block-conocidos">
+        <h2 class="hero-title">Tiempo conociéndonos</h2>
+        <p class="hero-date">Desde <strong>08/03/2025</strong></p>
+        <div class="avatar"><img src="img/3.jpeg" alt="Nosotros — conociéndonos" /></div>
+        <div class="timer-card">
+          <div class="grid" id="timer-conocidos">
+            <div class="unit"><h2 id="years-con">0</h2><small>AÑOS</small></div>
+            <div class="unit"><h2 id="months-con">0</h2><small>MESES</small></div>
+            <div class="unit"><h2 id="days-con">0</h2><small>DÍAS</small></div>
+            <div class="unit"><h2 id="hours-con">00</h2><small>HORAS</small></div>
+            <div class="unit"><h2 id="minutes-con">00</h2><small>MINUTOS</small></div>
+            <div class="unit"><h2 id="seconds-con">00</h2><small>SEGUNDOS</small></div>
+          </div>
+        </div>
+      </article>
     </section>
 
+    <!-- NAVTABS -->
+    <div class="tabs-wrap">
+      <nav class="tabs" aria-label="Navegación de sorpresas">
+        <a class="tab" href="sorpresa.html">Este mes</a>
+        <a class="tab" href="poster-6-meses.html">Poster 6 meses</a>
+        <a class="tab" href="sistema-solar.html">Sistema solar</a>
+        <a class="tab" href="galeria.html">Galería de fotos</a>
+        <a class="tab" href="carta.html">Carta</a>
+      </nav>
+    </div>
+
+    <!-- RECUERDOS: carrusel scroll-snap (compacto y estable) -->
     <section class="section">
-      <h3 style="color: #5a2452;">Los recuerdos de este mes</h3>
-      <div class="stage">
-        <div class="deck" id="deck">
-          <figure class="photo" data-caption="Concierto"><img src="img/2.jpeg" alt="Concierto"></figure>
-          <figure class="photo" data-caption="Camino a Puerto Malabrigo"><img src="img/3.jpeg" alt="Camino a Puerto Malabrigo"></figure>
-          <figure class="photo" data-caption="En la playa"><img src="img/4.jpeg" alt="En la playa"></figure>
-          <figure class="photo" data-caption="Tú y yo"><img src="img/5.jpeg" alt="Tú y yo"></figure>
-          <figure class="photo" data-caption="Con besito jasj"><img src="img/6.jpeg" alt="Con besito jasj"></figure>
-          <figure class="photo" data-caption="Un sábado juntos"><img src="img/7.jpeg" alt="Un sábado juntos"></figure>
-          <figure class="photo" data-caption="El día de mi cumple, gracias por todo mi amor"><img src="img/8.jpeg" alt="Cumple"></figure>
-          <figure class="photo" data-caption="De camino al gallito ciego"><img src="img/9.jpeg" alt="Gallito ciego"></figure>
-          <figure class="photo" data-caption="Almorzando"><img src="img/12.jpeg" alt="Almorzando"></figure>
-          <figure class="photo" data-caption="Ya allí en el lugar"><img src="img/10.jpeg" alt="Ya allí"></figure>
-          <figure class="photo" data-caption="Otra foto allí con mi amorcito"><img src="img/11.jpeg" alt="Otra foto allí"></figure>
-        </div><br>
-        <div class="nav">
-          <button id="prev" aria-label="Anterior">⟵</button>
-          <button id="next" aria-label="Siguiente">⟶</button>
-        </div><br>
-        <div style="text-align:center; margin-bottom:20px;">
-          <a href="carta.html" class="home-btn">Haz click amor jajs</a>
+      <h3 style="color:#5a2452">Nuestros recuerdos</h3>
+      <div class="carousel" role="region" aria-label="Carrusel de recuerdos">
+        <button class="c-arrow prev" aria-label="Anterior" id="c-prev">⟵</button>
+        <div class="snap" id="snap">
+          <figure class="slide"><img src="mes_6/2.jpeg"  alt="Pacasmayo"><figcaption></figcaption></figure>
+          <figure class="slide"><img src="mes_6/3.jpeg"  alt="Pacasmayo"><figcaption></figcaption></figure>
+          <figure class="slide"><img src="mes_6/4.jpeg"  alt="Pacasmayo"><figcaption></figcaption></figure>
+          <figure class="slide"><img src="mes_6/5.jpeg"  alt="Pacasmayo"><figcaption></figcaption></figure>
+          <figure class="slide"><img src="mes_6/6.jpeg"  alt="Pacasmayo"><figcaption></figcaption></figure>
+          <figure class="slide"><img src="mes_6/7.jpeg"  alt="Pacasmayo"><figcaption></figcaption></figure>
+          <figure class="slide"><img src="mes_6/8.jpeg"  alt="Pacasmayo"><figcaption></figcaption></figure>
         </div>
+        <button class="c-arrow next" aria-label="Siguiente" id="c-next">⟶</button>
+        <div class="c-dots" id="c-dots" aria-label="Indicadores"></div>
       </div>
+      <div style="text-align:center; margin:16px 0 4px;"><a href="carta.html" class="home-btn">Haz click amor jajs</a></div>
     </section>
   </div>
 
   <script>
-    // ====== TIMER ======
-    const start = new Date(2025, 3, 4, 0, 0, 0);
-    const ids = ['years','months','days','hours','minutes','seconds'];
-    const els = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    // ===== Utiles de fecha =====
+    function monthsSince(start, now){ let m = (now.getFullYear()-start.getFullYear())*12 + (now.getMonth()-start.getMonth()); if(now.getDate()<start.getDate()) m -= 1; return Math.max(0,m); }
+    function diffParts(from, to){ let y=to.getFullYear()-from.getFullYear(); let m=to.getMonth()-from.getMonth(); let d=to.getDate()-from.getDate(); if(d<0){ const prev=new Date(to.getFullYear(),to.getMonth(),0).getDate(); d+=prev; m-=1;} if(m<0){ m+=12; y-=1;} const anchor=new Date(from.getFullYear()+y, from.getMonth()+m, from.getDate()+d, from.getHours(), from.getMinutes(), from.getSeconds()); let ms=to-anchor; const HS=3600000, MIN=60000, SEC=1000; const H=Math.floor(ms/HS); ms-=H*HS; const Min=Math.floor(ms/MIN); ms-=Min*MIN; const S=Math.floor(ms/SEC); return {y,m,d,H,Min,S}; }
 
-    function diffParts(from, to){
-      let y = to.getFullYear() - from.getFullYear();
-      let m = to.getMonth() - from.getMonth();
-      let d = to.getDate() - from.getDate();
-      if (d < 0){ const prev = new Date(to.getFullYear(), to.getMonth(), 0).getDate(); d += prev; m -= 1; }
-      if (m < 0){ m += 12; y -= 1; }
-      const anchor = new Date(from.getFullYear()+y, from.getMonth()+m, from.getDate()+d, from.getHours(), from.getMinutes(), from.getSeconds());
-      let ms = to - anchor; const hs = 1000*60*60, mins = 1000*60, secs = 1000;
-      const H = Math.floor(ms/hs); ms -= H*hs; const Min = Math.floor(ms/mins); ms -= Min*mins; const S = Math.floor(ms/secs);
-      return {y, m, d, H, Min, S};
-    }
-    function tick(){
-      const now = new Date();
-      const {y, m, d, H, Min, S} = diffParts(start, now);
-      els.years.textContent = y; els.months.textContent = m; els.days.textContent = d;
-      els.hours.textContent = H.toString().padStart(2,'0'); els.minutes.textContent = Min.toString().padStart(2,'0'); els.seconds.textContent = S.toString().padStart(2,'0');
-      requestAnimationFrame(loop);
-    }
-    function loop(){ setTimeout(tick, 250); }
-    tick();
+    // ===== TIMERS =====
+    const START_NOVIOS = new Date(2025, 3, 4, 0, 0, 0); // 04/04/2025
+    const START_CONO   = new Date(2025, 2, 8, 0, 0, 0); // 08/03/2025
+    function startTimer(rootId, startDate){ const get=id=>document.getElementById(`${id}-${rootId}`); const els={years:get('years'),months:get('months'),days:get('days'),hours:get('hours'),minutes:get('minutes'),seconds:get('seconds')}; function update(){ const now=new Date(); const {y,m,d,H,Min,S}=diffParts(startDate,now); els.years.textContent=y; els.months.textContent=m; els.days.textContent=d; els.hours.textContent=String(H).padStart(2,'0'); els.minutes.textContent=String(Min).padStart(2,'0'); els.seconds.textContent=String(S).padStart(2,'0'); } update(); setInterval(update,250); }
+    startTimer('nov', START_NOVIOS); startTimer('con', START_CONO);
 
-    // ====== COVERFLOW 3D ======
-    const deck = document.getElementById('deck');
-    const photos = Array.from(deck.querySelectorAll('.photo'));
-    let current = Math.floor(photos.length/2);
+    // ===== Header dinámico (sin repetir fechas) =====
+    (function(){ const title=document.getElementById('main-title'); const sub=document.getElementById('sub-title'); const now=new Date(); const m=monthsSince(START_NOVIOS, now); const exactDay = now.getDate()===START_NOVIOS.getDate(); if(m>0 && exactDay){ title.textContent = m===1? '¡Feliz 1 mes!' : `¡Felices ${m} meses!`; sub.textContent='Te amo, capibara 💗'; setTimeout(()=>{ try{ burst(window.innerWidth/2, 120, 100); }catch(e){} }, 300); }else{ title.textContent='Nuestro tiempo juntos'; sub.textContent='Siempre tú y yo, mi amor 💖'; } })();
 
-    function layout(){
-      photos.forEach((ph, i)=>{
-        const offset = i - current;
-        const sign = Math.sign(offset);
-        const abs = Math.abs(offset);
-        const styles = getComputedStyle(deck);
-        const gap = parseFloat(styles.getPropertyValue('--gap')) || 220;
-        const angle = parseFloat(styles.getPropertyValue('--angle')) || -28;
-        const depth = parseFloat(styles.getPropertyValue('--z')) || 220;
-        const tx = offset * gap;
-        const rz = sign * angle * Math.min(abs, 1.2);
-        const tz = depth - Math.min(abs, 3) * 120;
-        ph.style.transform = `translateX(calc(-50% + ${tx}px)) translateZ(${tz}px) rotateY(${rz}deg)`;
-        ph.setAttribute('aria-current', i===current);
-        ph.style.zIndex = 1000 - abs;
+    // ===== Navtabs activo =====
+    (function(){
+      const tabs = document.querySelectorAll('.tabs .tab');
+      const current = (location.pathname.split('/').pop() || 'sorpresa.html').toLowerCase();
+      tabs.forEach(a=>{
+        const href = (a.getAttribute('href')||'').toLowerCase();
+        if(href === current) a.classList.add('is-active');
+        else a.classList.remove('is-active');
       });
+    })();
+
+    // ===== Carrusel scroll-snap (arreglado y más robusto) =====
+    const snap = document.getElementById('snap');
+    const slides = Array.from(snap.querySelectorAll('.slide'));
+    const dotsWrap = document.getElementById('c-dots');
+    const prevBtn = document.getElementById('c-prev');
+    const nextBtn = document.getElementById('c-next');
+
+    // crea puntos
+    dotsWrap.innerHTML = '';
+    slides.forEach((_, i) => {
+      const b = document.createElement('button');
+      b.className = 'c-dot';
+      b.type = 'button';
+      b.setAttribute('aria-label', `Ir a foto ${i+1}`);
+      b.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(b);
+    });
+
+    let idx = 0, slideW = 0, gap = 16, scrolling = false, scrollDebounce = null;
+
+    function measure(){
+      slideW = slides[0]?.getBoundingClientRect().width || 320;
+      const cs = getComputedStyle(snap);
+      const cg = parseFloat(cs.columnGap || cs.gap || '16');
+      gap = isNaN(cg) ? 16 : cg;
     }
-    layout();
 
-    function go(n){ current = (n + photos.length) % photos.length; layout(); }
-    document.getElementById('prev').addEventListener('click', ()=>go(current-1));
-    document.getElementById('next').addEventListener('click', ()=>go(current+1));
-    photos.forEach((ph, i)=> ph.addEventListener('click', ()=> go(i)) );
+    function centerFor(i){
+      const el = slides[i];
+      return el.offsetLeft - (snap.clientWidth - slideW)/2;
+    }
 
-    let sx=null;
-    deck.addEventListener('pointerdown', e=>{ sx = e.clientX; deck.setPointerCapture(e.pointerId); });
-    deck.addEventListener('pointerup',   e=>{ if(sx===null) return; const dx = e.clientX - sx; if(Math.abs(dx) > 40){ go(current - Math.sign(dx)); } sx=null; deck.releasePointerCapture(e.pointerId); });
-    deck.addEventListener('wheel', e=>{ e.preventDefault(); if(e.deltaY>0 || e.deltaX>0) go(current+1); else go(current-1); }, {passive:false});
+    function mark(i){
+      slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+      Array.from(dotsWrap.children).forEach((d, k) => d.setAttribute('aria-current', k === i ? 'true' : 'false'));
+    }
 
-    // ====== CORAZONES FLOTANTES + FRASES EN CLIC ======
+    function goTo(i){
+      idx = Math.max(0, Math.min(i, slides.length - 1));
+      mark(idx);
+      scrolling = true;
+      snap.scrollTo({ left: centerFor(idx), behavior: 'smooth' });
+      setTimeout(() => scrolling = false, 400);
+    }
+
+    function updateIdxFromScroll(){
+      if (scrolling) return;
+      const center = snap.scrollLeft + snap.clientWidth/2;
+      let bestI = 0, bestDist = Infinity;
+      slides.forEach((el, i) => {
+        const mid = el.offsetLeft + slideW/2;
+        const dist = Math.abs(mid - center);
+        if (dist < bestDist){ bestDist = dist; bestI = i; }
+      });
+      if (bestI !== idx){ idx = bestI; mark(idx); }
+    }
+
+    function onScroll(){
+      clearTimeout(scrollDebounce);
+      scrollDebounce = setTimeout(updateIdxFromScroll, 80);
+    }
+
+    prevBtn.addEventListener('click', () => goTo(idx - 1));
+    nextBtn.addEventListener('click', () => goTo(idx + 1));
+    document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') goTo(idx - 1); if (e.key === 'ArrowRight') goTo(idx + 1); });
+
+    snap.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => { measure(); goTo(idx); });
+
+    measure();
+    goTo(0);
+
+    // ===== CORAZONES FLOTANTES + FRASES EN CLIC =====
     const canvas = document.getElementById('lovefx');
     const ctx = canvas.getContext('2d');
     const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    let W = 0, H = 0;
-    let particles = [];
-
-    function resize(){
-      W = canvas.width  = Math.floor(innerWidth * DPR);
-      H = canvas.height = Math.floor(innerHeight * DPR);
-      canvas.style.width  = innerWidth + 'px';
-      canvas.style.height = innerHeight + 'px';
-    }
+    let W = 0, H = 0; let particles = [];
+    function resize(){ W = canvas.width = Math.floor(innerWidth * DPR); H = canvas.height = Math.floor(innerHeight * DPR); canvas.style.width = innerWidth+'px'; canvas.style.height = innerHeight+'px'; }
     resize(); addEventListener('resize', resize);
-
-    // Dibuja un corazón en (x,y) a escala s
-    function drawHeart(x, y, s, color){
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(s, s);
-      ctx.beginPath();
-      ctx.moveTo(0, -2);
-      ctx.bezierCurveTo(2, -5, 7, -3, 7, 1);
-      ctx.bezierCurveTo(7, 5, 2, 8, 0, 11);
-      ctx.bezierCurveTo(-2, 8, -7, 5, -7, 1);
-      ctx.bezierCurveTo(-7, -3, -2, -5, 0, -2);
-      ctx.closePath();
-      ctx.fillStyle = color;
-      ctx.shadowColor = 'rgba(255, 0, 83, .35)';
-      ctx.shadowBlur = 12 * DPR;
-      ctx.fill();
-      ctx.restore();
-    }
-
-    const HEART_SETTINGS = {
-    spawnChance: 0.02,   
-    sizeMin: 2,          
-    sizeMax: 5           
-    };
-
-function spawnFloatingHeart(){
-  // Ahora nacen en cualquier parte de la pantalla (no solo abajo)
-  const x = Math.random() * W;
-  const y = Math.random() * H;
-
-  // Tamaño más pequeño y variado
-  const s = (HEART_SETTINGS.sizeMin + Math.random() * (HEART_SETTINGS.sizeMax - HEART_SETTINGS.sizeMin)) * DPR;
-
-  // Velocidades suaves para que “floten” y cubran más área
-  const vx = (Math.random() - 0.5) * 0.25 * DPR;    // deriva horizontal sutil
-  const vy = (Math.random() * -0.6 - 0.15) * DPR;   // mayormente hacia arriba
-
-  particles.push({
-    x, y, vx, vy, s,
-    life: 600 + Math.random() * 500,
-    color: `hsl(${330 + Math.random()*30} 90% ${60+Math.random()*20}%)`,
-    rot: Math.random() * Math.PI * 2,
-    vr: (Math.random() - 0.5) * 0.02
-  });
-}
-
-
-function burst(x, y, n = 60){
-  const cx = x * DPR, cy = y * DPR;
-  for (let i = 0; i < n; i++){
-    const a  = Math.random() * Math.PI * 2;
-    const sp = (1.0 + Math.random() * 2.0) * DPR;    // velocidad moderada
-    const s  = (0.5 + Math.random() * 1.2) * DPR;     // ★ corazones más pequeños (antes eran ~3–13)
-
-    particles.push({
-      x: cx, y: cy,
-      vx: Math.cos(a) * sp,
-      vy: Math.sin(a) * sp - 0.4 * DPR,
-      s,                                                   // tamaño pequeño
-      life: 180 + Math.random() * 120,
-      color: `hsl(${330 + Math.random() * 30} 90% ${55 + Math.random() * 20}%)`,
-      rot: Math.random() * Math.PI * 2,
-      vr: (Math.random() - 0.5) * 0.15
-    });
-  }
-}
-
-
-    function animate(){
-      ctx.clearRect(0,0,W,H);
-      // añadir flotantes suaves
-        if (Math.random() < HEART_SETTINGS.spawnChance) spawnFloatingHeart();
-
-      particles.forEach(p=>{
-        p.vy += 0.004*DPR;     // leve gravedad
-        p.x  += p.vx;
-        p.y  += p.vy;
-        p.rot+= p.vr;
-        p.life--;
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        drawHeart(0,0,p.s, p.color);
-        ctx.restore();
-      });
-      particles = particles.filter(p => p.life>0 && p.y > -40*DPR && p.x>-40*DPR && p.x<W+40*DPR);
-      requestAnimationFrame(animate);
-    }
+    function drawHeart(x, y, s, color){ ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.beginPath(); ctx.moveTo(0, -2); ctx.bezierCurveTo(2, -5, 7, -3, 7, 1); ctx.bezierCurveTo(7, 5, 2, 8, 0, 11); ctx.bezierCurveTo(-2, 8, -7, 5, -7, 1); ctx.bezierCurveTo(-7, -3, -2, -5, 0, -2); ctx.closePath(); ctx.fillStyle = color; ctx.shadowColor = 'rgba(255, 0, 83, .35)'; ctx.shadowBlur = 12 * DPR; ctx.fill(); ctx.restore(); }
+    const HEART_SETTINGS = { spawnChance: 0.02, sizeMin: 2, sizeMax: 5 };
+    function spawnFloatingHeart(){ const x = Math.random()*W, y = Math.random()*H; const s = (HEART_SETTINGS.sizeMin + Math.random()*(HEART_SETTINGS.sizeMax-HEART_SETTINGS.sizeMin))*DPR; const vx=(Math.random()-0.5)*0.25*DPR; const vy=(Math.random()*-0.6-0.15)*DPR; particles.push({x,y,vx,vy,s, life:600+Math.random()*500, color:`hsl(${330+Math.random()*30} 90% ${60+Math.random()*20}%)`, rot:Math.random()*Math.PI*2, vr:(Math.random()-0.5)*0.02}); }
+    function burst(x, y, n=60){ const cx=x*DPR, cy=y*DPR; for(let i=0;i<n;i++){ const a=Math.random()*Math.PI*2, sp=(1+Math.random()*2)*DPR, s=(0.5+Math.random()*1.2)*DPR; particles.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-0.4*DPR,s, life:180+Math.random()*120, color:`hsl(${330+Math.random()*30} 90% ${55+Math.random()*20}%)`, rot:Math.random()*Math.PI*2, vr:(Math.random()-0.5)*0.15}); } }
+    function animate(){ ctx.clearRect(0,0,W,H); if(Math.random()<HEART_SETTINGS.spawnChance) spawnFloatingHeart(); particles.forEach(p=>{ p.vy+=0.004*DPR; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life--; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); drawHeart(0,0,p.s,p.color); ctx.restore(); }); particles=particles.filter(p=>p.life>0 && p.y>-40*DPR && p.x>-40*DPR && p.x<W+40*DPR); requestAnimationFrame(animate); }
     animate();
 
-    // Frases al hacer clic
-    const frases = [
-      "Te amo", "Mi vida", "Mi cielo", "Mi princesa", "Siempre tú",
-      "Contigo todo", "Eres mi paz", "Para siempre", "Tú y yo", "Amor eterno"
-    ];
-
-    function showPhrase(x,y){
-      const span = document.createElement('span');
-      span.className = 'phrase';
-      span.textContent = frases[Math.floor(Math.random()*frases.length)];
-      span.style.left = x + 'px';
-      span.style.top  = y + 'px';
-      span.style.transform += ` rotate(${(-10 + Math.random()*20)}deg)`;
-      document.body.appendChild(span);
-      span.addEventListener('animationend', ()=> span.remove());
-    }
-
-    // Click global: estallido + frase + (desbloqueo móvil para música si estaba pausada)
-    document.addEventListener('click', (e)=>{
-      burst(e.clientX, e.clientY, 60);
-      showPhrase(e.clientX, e.clientY);
-      const audio = document.getElementById('bg-music');
-      if (audio && audio.paused) audio.play().catch(()=>{});
-    }, {passive:true});
+    const frases=["Te amo","Mi vida","Mi cielo","Mi princesa","Siempre tú","Contigo todo","Eres mi paz","Para siempre","Tú y yo","Amor eterno"];
+    function showPhrase(x,y){ const span=document.createElement('span'); span.textContent=frases[Math.floor(Math.random()*frases.length)]; Object.assign(span.style,{position:'fixed',left:x+'px',top:y+'px',transform:'translate(-50%,-50%)',fontFamily:'Great Vibes, Sacramento, cursive',fontSize:'clamp(22px, 4vw, 42px)',color:'#ff2d6a',textShadow:'0 10px 26px rgba(255,45,106,.35)',opacity:'0',pointerEvents:'none',zIndex:'6'}); document.body.appendChild(span); span.animate([{transform:'translate(-50%,-50%) translateY(10px) scale(.9)', opacity:0},{opacity:1, offset:.1},{opacity:1, offset:.8},{transform:'translate(-50%,-50%) translateY(-60px) scale(1.05)', opacity:0}],{duration:1600, easing:'ease'}); setTimeout(()=>span.remove(),1650); }
+    document.addEventListener('click', (e)=>{ burst(e.clientX,e.clientY,60); showPhrase(e.clientX,e.clientY); const audio=document.getElementById('bg-music'); if(audio && audio.paused) audio.play().catch(()=>{}); }, {passive:true});
   </script>
 </body>
-
-<!-- Fallback para móviles: arranca música tras el primer toque -->
-<script>
-  document.addEventListener('click', () => {
-    const audio = document.getElementById('bg-music');
-    if (audio && audio.paused) { audio.play().catch(()=>{}); }
-  }, { once: true });
-</script>
 </html>

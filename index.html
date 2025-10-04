@@ -1,283 +1,179 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Sandy te amooo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Sandy te amooo — capibara</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #ffb6c1, #ff69b4);
-      color: #fff;
-      overflow: hidden; /* <-- para que no aparezca scroll con los corazones */
-      position: relative; /* <-- para posicionar la capa de corazones */
+    :root{ --pink-1:#ff69b4; --pink-2:#ffb6c1; --pink-3:#ff4f87; }
+    *{box-sizing:border-box}
+    body{
+      margin:0; height:100svh; display:flex; flex-direction:column; justify-content:center; align-items:center;
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(135deg,var(--pink-2),var(--pink-1)); color:#fff; overflow:hidden; position:relative;
     }
+    h1{ font-size:clamp(1.2rem,2.5vw,2rem); margin:0 0 .75rem; text-shadow:0 2px 6px rgba(0,0,0,.25); z-index:2; position:relative }
+    .nickname{ display:inline-flex; align-items:center; gap:.5rem; padding:.35rem .75rem; border-radius:999px; background:rgba(255,255,255,.16); box-shadow:0 10px 25px rgba(0,0,0,.14), inset 0 0 0 1px rgba(255,255,255,.25); backdrop-filter:blur(6px); font-weight:700 }
 
-    h1 {
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      z-index: 2; /* encima de corazones */
-      position: relative;
-    }
+    /* Card */
+    .panel{ background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06)); border-radius:28px; width:min(560px,92vw); padding:24px 22px 18px; position:relative; z-index:2; box-shadow:0 20px 50px rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.25); backdrop-filter:blur(8px); display:flex; flex-direction:column; gap:14px }
 
-    .lock {
-      background: #ff4f87;
-      border-radius: 50% 50% 20% 20%;
-      width: 200px;
-      height: 200px;
-      position: relative;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding: 20px;
-      z-index: 2; 
-    }
+    .q{ display:flex; flex-direction:column; gap:6px }
+    .q label{ font-weight:700; letter-spacing:.2px }
+    .q label .note{ font-weight:400; opacity:.9; font-size:.9rem }
+    .input{ appearance:none; padding:12px 14px; font-size:1rem; border-radius:12px; border:none; background:#fff; color:var(--pink-3); font-weight:700; box-shadow:0 6px 16px rgba(0,0,0,.2); outline:none }
+    .input::placeholder{ color:#f59bbb }
+    .input.invalid{ box-shadow:0 0 0 2px #ffcccc, 0 8px 18px rgba(0,0,0,.2) }
+    .input.valid{ box-shadow:0 0 0 2px #c9ffd6, 0 8px 18px rgba(0,0,0,.2) }
 
-    .input-row {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
+    .btn{ margin-top:6px; padding:12px 20px; font-size:1rem; border:0; border-radius:12px; background:#fff; color:var(--pink-3); font-weight:800; cursor:pointer; transition:transform .06s ease, background .2s ease; box-shadow:0 10px 24px rgba(0,0,0,.22) }
+    .btn:hover{ background:#ffe6f0 }
+    .btn:active{ transform:translateY(1px) }
 
-    select {
-      appearance: none;
-      padding: 10px;
-      font-size: 1rem;
-      margin: 0 5px;
-      border-radius: 8px;
-      border: none;
-      text-align: center;
-      background: #fff;
-      color: #ff4f87;
-      font-weight: bold;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
+    .hint{ font-size:.95rem; opacity:.9; z-index:2; position:relative; text-align:center; margin-top:6px }
 
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      background: #fff;
-      color: #ff4f87;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+    .shake{ animation:shake .4s }
+    @keyframes shake{ 0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}50%{transform:translateX(10px)}75%{transform:translateX(-10px)} }
 
-    button:hover {
-      background: #ffe6f0;
-    }
+    /* Hearts BG */
+    .hearts-bg{ position:absolute; inset:0; pointer-events:none; z-index:1; overflow:hidden }
+    .heart{ position:absolute; font-size:14px; line-height:1; will-change:transform,opacity; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); user-select:none }
+    .float{ opacity:.9; animation:float-up var(--dur,10s) linear forwards }
+    @keyframes float-up{ 0%{transform:translateY(0) scale(var(--s,1)) rotate(0); opacity:0} 10%{opacity:1} 100%{transform:translateY(-130vh) translateX(var(--drift,0px)) scale(var(--s,1)) rotate(360deg); opacity:0} }
 
-    .hint {
-      margin-top: 20px;
-      font-size: 0.9rem;
-      opacity: 0.8;
-      z-index: 2; /* encima de corazones */
-      position: relative;
-    }
-
-    .shake {
-      animation: shake 0.4s;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      50% { transform: translateX(10px); }
-      75% { transform: translateX(-10px); }
-    }
-
-    /* ====== Corazones flotando ====== */
-.hearts-bg{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:1;      /* detrás del contenido */
-  overflow:hidden;
-}
-.heart{
-  position:absolute;
-  font-size:14px;
-  line-height:1;
-  will-change:transform,opacity;
-  filter:drop-shadow(0 4px 8px rgba(0,0,0,.25));
-  user-select:none;
-}
-.float{
-  opacity:.9;
-  animation:float-up var(--dur,10s) linear forwards;
-}
-@keyframes float-up{
-  0%   { transform:translateY(0) scale(var(--s,1)) rotate(0deg); opacity:0; }
-  10%  { opacity:1; }
-  100% { transform:translateY(-130vh) translateX(var(--drift,0px)) scale(var(--s,1)) rotate(360deg); opacity:0; }
-}
-/* ====== fin corazones ====== */
-
-.phrase {
-  position: absolute;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #fff;
-  text-shadow: 0 2px 8px rgba(0,0,0,.3);
-  opacity: 0;
-  transition: all 1s ease; /* suaviza movimiento y aparición */
-}
-
-@keyframes fade {
-  0%,100% { opacity: 0; }
-  50% { opacity: 1; }
-}
-
-
-    /* ====== fin corazones ====== */
+    /* Floating phrases */
+    .phrase{ position:absolute; font-size:clamp(1rem,2.2vw,1.25rem); font-weight:800; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.3); opacity:0; transition:all 1s ease }
   </style>
 </head>
 <body>
-  <!-- capa de corazones (añadido) -->
+  <!-- BG hearts layer -->
   <div class="hearts-bg" id="hearts-bg" aria-hidden="true"></div>
-<div id="phrase" class="phrase">Te amo</div>
+  <div id="phrase" class="phrase">Te amo</div>
 
+  <h1>
+    Mi Sandy te amooo ·
+    <span class="nickname" title="Nuestro apodo">capibara ♥</span>
+  </h1>
 
-  <h1>Ingresa la fecha correcta...</h1>
-
-  <div class="lock" id="lock">
-    <div class="input-row">
-      <select id="day"></select>
-      <select id="month"></select>
-      <select id="year"></select>
+  <section class="panel" id="panel">
+    <!-- 3 PREGUNTAS: si TODAS son correctas, se desbloquea -->
+    <div class="q">
+      <label for="q1">1) ¿En qué fecha nos conocimos? <span class="note"></span></label>
+      <input id="q1" class="input" type="date" min="2024-01-01" max="2030-12-31" />
     </div>
-    <button onclick="checkDate()">Desbloquear</button>
-  </div>
 
-  <p class="hint">Ya sabes que fecha ingresar amor</p>
+    <div class="q">
+      <label for="q2">2) ¿En qué fecha fuimos enamorados? <span class="note"></span></label>
+      <input id="q2" class="input" type="date" min="2024-01-01" max="2030-12-31" />
+    </div>
+
+    <div class="q">
+      <label for="q3">3) ¿Cómo nos decimos de cariño?</label>
+      <input id="q3" class="input" type="text" placeholder="escribe aquí..." autocomplete="off" />
+    </div>
+
+    <button class="btn" id="unlock">Desbloquear</button>
+  </section>
+
+  <p class="hint" id="hint">Responde las 3 preguntas correctamente para abrir la sorpresa ✨</p>
+
   <audio id="bg-music" autoplay loop>
-    <source src="sweet.mp3" type="audio/mpeg">
+    <source src="sweet.mp3" type="audio/mpeg" />
     Tu navegador no soporta audio HTML5.
   </audio>
 
   <script>
-    // ====== Frases románticas dinámicas ======
-const phraseEl = document.getElementById("phrase");
-const PHRASES = [
-  "Te amo",
-  "Eres mi vida",
-  "Mi persona favorita",
-  "Para siempre contigo",
-  "Eres mi todo",
-  "Mi bebé 🌞",
-  "Mi Sandy 🌙",
-  "❤️"
-];
+    // === Respuestas correctas ===
+    const CORRECT = { date1: '08/03/2025', date2: '04/04/2025', nick: 'capibara' };
 
-function showRandomPhrase() {
-  // Texto aleatorio
-  const text = PHRASES[Math.floor(Math.random() * PHRASES.length)];
-  phraseEl.textContent = text;
-
-  // Posición aleatoria (dentro de pantalla con márgenes)
-  const x = Math.random() * 80 + 10; // 10% - 90%
-  const y = Math.random() * 70 + 10; // 10% - 80%
-  phraseEl.style.left = x + "vw";
-  phraseEl.style.top = y + "vh";
-
-  // Animar aparición
-  phraseEl.style.opacity = 1;
-
-  // Desaparece antes de moverse otra vez
-  setTimeout(() => phraseEl.style.opacity = 0, 2500);
-}
-
-// Cambiar cada 4s
-setInterval(showRandomPhrase, 4000);
-showRandomPhrase(); // mostrar la primera al cargar
-// ====== fin frases ======
-
-
-
-    // Rellenar selects
-    const daySelect = document.getElementById('day');
-    const monthSelect = document.getElementById('month');
-    const yearSelect = document.getElementById('year');
-
-    for (let d = 1; d <= 31; d++) {
-      daySelect.innerHTML += `<option value="${d}">${d.toString().padStart(2, '0')}</option>`;
+    // === Frases dinámicas ===
+    const phraseEl = document.getElementById('phrase');
+    const PHRASES = ['Te amo','Eres mi vida','Mi persona favorita','Para siempre contigo','Eres mi todo','Mi Sandy 🌙','Mi capibara 🐾','❤️'];
+    function showRandomPhrase(){
+      const text = PHRASES[Math.floor(Math.random()*PHRASES.length)];
+      phraseEl.textContent = text;
+      const x = Math.random()*80+10; const y = Math.random()*70+10;
+      phraseEl.style.left = x+'vw'; phraseEl.style.top = y+'vh';
+      phraseEl.style.opacity = 1; setTimeout(()=> phraseEl.style.opacity = 0, 2500);
     }
-    for (let m = 1; m <= 12; m++) {
-      monthSelect.innerHTML += `<option value="${m}">${m.toString().padStart(2, '0')}</option>`;
-    }
-    for (let y = 2024; y <= 2030; y++) {
-      yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+    setInterval(showRandomPhrase, 4000); showRandomPhrase();
+
+    // === Inputs ===
+    const q1 = document.getElementById('q1');
+    const q2 = document.getElementById('q2');
+    const q3 = document.getElementById('q3');
+
+    function pad2(n){ return String(n).padStart(2,'0') }
+    function digitsOnly(t){ let out=''; for(const ch of String(t)){ if(ch>='0' && ch<='9'){ out+=ch } } return out }
+    function normalizeDate(str){
+      if(!str) return '';
+      let s = String(str);
+      // soporta formatos de input type=date (yyyy-mm-dd) y variantes
+      s = s.split('-').join('/'); s = s.split('.').join('/'); s = s.split(' ').join('/');
+      const parts = s.split('/').filter(Boolean).map(digitsOnly);
+      if(parts.length < 3) return '';
+      let d = parts[0], m = parts[1], y = parts[2];
+      if(y.length === 2) y = '20' + y;
+      if(y.length !== 4) return '';
+      const dd = parseInt(d,10), mm = parseInt(m,10), yyyy = parseInt(y,10);
+      if(!(dd>=1 && dd<=31 && mm>=1 && mm<=12 && yyyy>=1900)) return '';
+      return pad2(dd)+'/'+pad2(mm)+'/'+String(yyyy);
     }
 
-    function checkDate() {
-      const day = daySelect.value.padStart(2, '0');
-      const month = monthSelect.value.padStart(2, '0');
-      const year = yearSelect.value;
-
-      const entered = `${day}/${month}/${year.slice(-2)}`; // formato dd/mm/yy
-      const correct = "04/04/25";
-
-      if (entered === correct) {
-        window.location.href = "sorpresa.html"; // redirigir a otra página
-      } else {
-        const lock = document.getElementById('lock');
-        lock.classList.add('shake');
-        setTimeout(() => lock.classList.remove('shake'), 400);
+    function normalizeFromDateInput(el){
+      // Si el input es type=date, su value es yyyy-mm-dd -> convertir a dd/mm/yyyy
+      if(el && el.type === 'date' && el.value){
+        const [yyyy, mm, dd] = el.value.split('-');
+        if(yyyy && mm && dd) return `${pad2(+dd)}/${pad2(+mm)}/${yyyy}`;
       }
+      return normalizeDate(el?.value||'');
     }
 
-    // ====== Lógica de corazones flotando (añadido) ======
+    function validate(){
+      [q1,q2,q3].forEach(el=> el.classList.remove('valid','invalid'));
+      const d1 = normalizeFromDateInput(q1);
+      const d2 = normalizeFromDateInput(q2);
+      const nk = (q3.value||'').trim().toLowerCase();
+      const ok1 = d1 === CORRECT.date1;
+      const ok2 = d2 === CORRECT.date2;
+      const ok3 = nk === CORRECT.nick || nk.includes(CORRECT.nick);
+      q1.classList.add(ok1?'valid':'invalid');
+      q2.classList.add(ok2?'valid':'invalid');
+      q3.classList.add(ok3?'valid':'invalid');
+      return ok1 && ok2 && ok3;
+    }
+
+    document.getElementById('unlock').addEventListener('click', ()=>{
+      const allGood = validate();
+      if(allGood){ setTimeout(()=>{ window.location.href = 'sorpresa.html?ok=1' }, 400) }
+      else{
+        const card = document.getElementById('panel');
+        card.classList.add('shake'); setTimeout(()=> card.classList.remove('shake'), 400);
+        document.getElementById('hint').textContent = 'Ups, revisa tus respuestas con calma ❤️';
+      }
+    });
+
+    ;[q1,q2,q3].forEach(el=> el.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter'){ ev.preventDefault(); document.getElementById('unlock').click() } }))
+
+    // === Corazones flotando ===
     const heartsBG = document.getElementById('hearts-bg');
-    const COLORS = ['#ffffff', '#ffd1e1', '#ffe3ee', '#ffc1d4'];
-
-    function spawnFloatingHeart() {
+    const COLORS = ['#ffffff','#ffd1e1','#ffe3ee','#ffc1d4'];
+    function spawnFloatingHeart(){
       const span = document.createElement('span');
-      span.className = 'heart float';
-      span.textContent = '❤';
-      const size = 10 + Math.random() * 18; // 10px - 28px
-      const left = Math.random() * 100;     // 0-100 vw
-      const drift = (Math.random() * 60 - 30) + 'px'; // deriva lateral
-      const dur = 9 + Math.random() * 6;    // 9s - 15s
-
-      span.style.left = left + 'vw';
-      span.style.bottom = '-10vh';
-      span.style.fontSize = size + 'px';
-      span.style.setProperty('--drift', drift);
-      span.style.setProperty('--s', (0.8 + Math.random()*0.6).toFixed(2));
-      span.style.setProperty('--dur', dur + 's');
+      span.className = 'heart float'; span.textContent = '❤';
+      const size = 10 + Math.random()*18; const left = Math.random()*100; const drift = (Math.random()*60-30)+'px'; const dur = 9 + Math.random()*6;
+      span.style.left = left+'vw'; span.style.bottom = '-10vh'; span.style.fontSize = size+'px';
+      span.style.setProperty('--drift',drift); span.style.setProperty('--s',(0.8+Math.random()*0.6).toFixed(2)); span.style.setProperty('--dur',dur+'s');
       span.style.color = COLORS[Math.floor(Math.random()*COLORS.length)];
-
-      heartsBG.appendChild(span);
-      span.addEventListener('animationend', () => span.remove());
+      heartsBG.appendChild(span); span.addEventListener('animationend', ()=> span.remove());
     }
+    for(let i=0;i<20;i++) spawnFloatingHeart(); setInterval(spawnFloatingHeart, 600);
 
-    // Genera algunos al inicio y luego continuamente
-    for (let i = 0; i < 20; i++) spawnFloatingHeart();
-    setInterval(spawnFloatingHeart, 600);
-    // ====== fin corazones ======
+    // === Autoplay helper ===
+    document.addEventListener('click',()=>{
+      const audio=document.getElementById('bg-music'); if(audio.paused){ audio.play().catch(()=>{}) }
+    },{ once:true });
   </script>
 </body>
-
-<script>
-  document.addEventListener('click', () => {
-    const audio = document.getElementById('bg-music');
-    if (audio.paused) {
-      audio.play();
-    }
-  }, { once: true }); // solo la primera vez
-</script>
 </html>
