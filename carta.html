@@ -43,11 +43,15 @@
     .tab.is-active{ color:#fff; background: linear-gradient(135deg,#ff4f87,#ff2d6a); box-shadow: 0 10px 18px rgba(183,44,126,.35) }
 
     /* ===== Escena 3D del sobre ===== */
-    .stage{ display:grid; place-items:center; min-height: clamp(420px, 70vh, 740px); perspective: 1400px; }
+    .stage{ display:grid; place-items:center; min-height: clamp(420px, 70vh, 740px); perspective: 1400px; position:relative; overflow:hidden; border-radius:26px; background:#05040a }
+    /* estrellas y luces tipo sistema solar */
+    .stage::before,.stage::after{ content:""; position:absolute; inset:-40%; pointer-events:none; }
+    .stage::before{ background-image: radial-gradient(#fff 1px, transparent 1.6px), radial-gradient(#ffd07a 1px, transparent 1.6px); background-size: 3px 3px, 4px 4px; background-position: 0 0, 20px 20px; opacity:.18; filter: blur(.2px); }
+    .stage::after{ background: radial-gradient(800px 600px at 30% 20%, rgba(255,120,160,.25), transparent 60%), radial-gradient(900px 700px at 70% 80%, rgba(120,80,255,.18), transparent 60%); mix-blend-mode: screen; opacity:.6; }
 
-    .envelope-btn{ background:transparent; border:0; padding:0; cursor:pointer }
+    .envelope-btn{ background:transparent; border:0; padding:0; cursor:pointer; position:relative; z-index:1 }
     .env3d{ position:relative; width:min(86vw, 560px); height:min(58vw, 380px);
-      transform-style: preserve-3d; transition: transform .9s cubic-bezier(.2,.8,.2,1); }
+      transform-style: preserve-3d; transition: transform .9s cubic-bezier(.2,.8,.2,1); overflow: visible; }
 
     /* Hover tilt para vida */
     .envelope-btn:hover .env3d{ transform: rotateX(6deg) rotateY(-6deg); }
@@ -61,9 +65,9 @@
 
     /* Carta (contenido) */
     .letter{ inset: 16px; border-radius:14px; background:#fff; padding: 22px 22px 26px; overflow:auto; line-height:1.6; color:#5a2452;
-      transform: translateZ(1px) translateY(40%) rotateX(0deg); transition: transform .9s cubic-bezier(.2,.8,.2,1), box-shadow .6s;
-      box-shadow: 0 30px 40px rgba(0,0,0,.18); }
-    .envelope-btn.is-open .letter{ transform: translateZ(20px) translateY(-6%) rotateX(0deg); }
+      transform: translateZ(1px) translateY(60%); transition: transform 900ms cubic-bezier(.2,.8,.2,1), opacity 500ms ease 250ms; box-shadow: 0 30px 40px rgba(0,0,0,.18);
+      opacity:0; visibility:hidden; pointer-events:none; }
+    .envelope-btn.is-open .letter{ transform: translateZ(60px) translateY(-10%) scale(1.06); opacity:1; visibility:visible; pointer-events:auto; }
 
     .letter h2{ margin:.2rem 0 1rem; font-family:"Great Vibes", cursive; font-size: clamp(28px, 6vw, 48px); color:#b72c7e }
     .letter p{ margin: .4rem 0 }
@@ -81,9 +85,9 @@
     .shadow{ inset:auto 10% 0 10%; height:22px; border-radius:999px; background: radial-gradient(closest-side, rgba(0,0,0,.28), transparent); transform: translateZ(-20px); filter: blur(3px); }
 
     /* Corazoncito sello */
-    .seal{ position:absolute; left:50%; top:18%; transform: translate(-50%,-50%) translateZ(26px); width:54px; height:54px; border-radius:999px;
+    .seal{ position:absolute; left:50%; top:18%; transform: translate(-50%,-50%) translateZ(6px); width:54px; height:54px; border-radius:999px;
       background: linear-gradient(135deg, #ff4f87, #ff2d6a); box-shadow: 0 10px 20px rgba(183,44,126,.35), inset 0 0 0 2px rgba(255,255,255,.5);
-      display:grid; place-items:center; color:#fff; font-size:22px; font-weight:900; text-shadow: 0 6px 16px rgba(0,0,0,.25) }
+      display:grid; place-items:center; color:#fff; font-size:22px; font-weight:900; text-shadow: 0 6px 16px rgba(0,0,0,.25); pointer-events:none; }
 
     /* Texto indicativo */
     .hint{ text-align:center; margin-top: 12px; font-weight:700; color:#88407c; opacity:.9 }
@@ -118,12 +122,16 @@
       <button id="envelopeBtn" class="envelope-btn" aria-expanded="false" aria-controls="letter">
         <div class="env3d">
           <div class="back"></div>
-          <div class="letter" id="letter">
+          <div class="letter" id="letter" hidden aria-hidden="true">
             <h2>Para mi Sandy</h2>
-            <p>Desde el primer día supe que contigo todo sería diferente. Eres mi abracito favorito, mi paz y mi alegría.</p>
-            <p>Gracias por cada momento, por cada sonrisa y por todo tu amor. Quiero caminar contigo todos los días que vengan.</p>
-            <p>Te ama con todo su corazón, tu capibara. 🫶</p>
-          </div>
+<p>Hoy quería escribirte para decirte lo que siento tal cual. Estar contigo me hace bien. Me gusta cómo me escuchas, cómo te ríes, me gusta como eres mi amor.</p>
+<p>Desde que nos conocimos he ido aprendiendo a ser más paciente, a hablar mejor y a cuidar de lo que tenemos. No soy perfecto, pero contigo quiero esforzarme y hacerlo bien.</p>
+<p>Me encanta hacer todo contigo, desde caminar, comer algo, ver una serie, quedarnos conversando sin darnos cuenta de la hora. En esos momentos siento que estoy justo donde quiero estar.</p>
+<p>Gracias por la confianza, por la forma en que me haces sentir en casa y por apoyarme incluso cuando estoy cansado o de malas. Quiero ser también ese apoyo para ti y estar en tus días buenos y en los que no tanto.</p>
+<p>Te prometo respeto, comunicación y ganas de seguir construyendo. Quiero que sigamos creciendo, viajando, peleándonos menos, riéndonos más y soñando juntos.</p>
+<p>Te amo, y te amaré en esta y en todas mis vidas. Gracias por haber llegado a mi vida. Te prometo que en esta y en todas nuestras vidas futuras te buscaré y te encontraré para ser felices siempre</p>
+<p>Con todo mi amor, Kevin</p>
+</div>
           <div class="front"></div>
           <div class="topflap"></div>
           <div class="seal">❤</div>
@@ -143,10 +151,11 @@
       tabs.forEach(a=>{ const href=(a.getAttribute('href')||'').toLowerCase(); a.classList.toggle('is-active', href===current); });
     })();
 
-    // Toggle abrir/cerrar + corazoncitos
+    // Toggle abrir/cerrar + corazoncitos (sin errores de llaves)
     (function(){
       const btn = document.getElementById('envelopeBtn');
       const burst = document.getElementById('burst');
+
       function popHearts(){
         burst.innerHTML = '';
         for(let i=0;i<14;i++){
@@ -159,11 +168,31 @@
         }
         setTimeout(()=> burst.innerHTML = '', 1000);
       }
+
       btn.addEventListener('click', ()=>{
-        const open = btn.classList.toggle('is-open');
+        const wasOpen = btn.classList.contains('is-open');
+        const open = !wasOpen;
+        btn.classList.toggle('is-open', open);
         btn.setAttribute('aria-expanded', open ? 'true':'false');
-        if(open) popHearts();
+
+        const letter = document.getElementById('letter');
+        if(open){
+          // asegurar que no se ve antes de abrir (FOUC)
+          letter.hidden = false; letter.setAttribute('aria-hidden','false');
+          // forzar reflow para que la transición ocurra
+          void letter.offsetWidth;
+          if(!wasOpen) popHearts();
+        } else {
+          // al cerrar, esperar transición y ocultar
+          letter.setAttribute('aria-hidden','true');
+          const onEnd = ()=>{ letter.hidden = true; letter.removeEventListener('transitionend', onEnd); };
+          letter.addEventListener('transitionend', onEnd);
+        }
       });
+
+      // Sanity checks ("tests" simples en consola)
+      console.assert(btn instanceof HTMLButtonElement, 'El botón del sobre debe existir');
+      console.assert(document.getElementById('letter'), 'El nodo de la carta debe existir');
     })();
   </script>
 </body>
