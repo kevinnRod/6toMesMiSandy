@@ -177,7 +177,7 @@
     startTimer('nov', START_NOVIOS); startTimer('con', START_CONO);
 
     // ===== Header dinámico (sin repetir fechas) =====
-    (function(){ const title=document.getElementById('main-title'); const sub=document.getElementById('sub-title'); const now=new Date(); const m=monthsSince(START_NOVIOS, now); const exactDay = now.getDate()===START_NOVIOS.getDate(); if(m>0 && exactDay){ title.textContent = m===1? '¡Feliz 1 mes!' : `¡Felices ${m} meses!`; sub.textContent='Te amo, capibara 💗'; setTimeout(()=>{ try{ burst(window.innerWidth/2, 120, 100); }catch(e){} }, 300); }else{ title.textContent='Nuestro tiempo juntos'; sub.textContent='Siempre tú y yo, mi amor 💖'; } })();
+    (function(){ const title=document.getElementById('main-title'); const sub=document.getElementById('sub-title'); const now=new Date(); const m=monthsSince(START_NOVIOS, now); const exactDay = now.getDate()===START_NOVIOS.getDate(); if(m>0 && exactDay){ title.textContent = m===1? '¡Feliz 1 mes!' : `¡Felices ${m} meses!`; sub.textContent='Te amo mi amor 💗'; setTimeout(()=>{ try{ burst(window.innerWidth/2, 120, 100); }catch(e){} }, 300); }else{ title.textContent='Nuestro tiempo juntos'; sub.textContent='Siempre tú y yo, mi amor 💖'; } })();
 
     // ===== Navtabs activo =====
     (function(){
