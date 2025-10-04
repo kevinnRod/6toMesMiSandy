@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Para ti, Mi Sandy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800;900&family=Sacramento&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#ff7aa8;
+      --bg2:#ffa3a3;
+      --card:#ff3e6c;
+      --card2:#ff6a5f;
+      --accent:#ffffff;
+      --heart:#ff2d55;
+      --shadow: 0 20px 40px rgba(0,0,0,.15);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; overflow-x:hidden; color:#fff;
+      font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 1200px at 10% 10%, #ffc1d6 0%, transparent 60%),
+                  radial-gradient(1000px 1000px at 90% 20%, #ffcbd3 0%, transparent 60%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+
+    body::before{
+      content:""; position:fixed; inset:0; pointer-events:none; opacity:.18;
+      background-image: radial-gradient(rgba(255,255,255,.35) 1px, transparent 1px);
+      background-size: 22px 22px;
+      z-index:0;
+    }
+
+    .hero{
+      position:relative; z-index:1; min-height:100dvh;
+      display:grid; place-items:center; padding: clamp(24px, 4vw, 48px);
+    }
+    .hero-inner{ text-align:center; max-width:1100px; width:100%; }
+
+    h1{
+      font-weight:900; letter-spacing:.5px; margin:0 0 8px;
+      font-size: clamp(36px, 5vw, 64px);
+      text-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .title-gradient{
+      background: linear-gradient(0deg, #fff, #ffe3ea 40%, #ffffff 60%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter: drop-shadow(0 6px 24px rgba(255, 0, 83,.35));
+    }
+    .subtitle{
+      margin:0 auto 32px; max-width:720px; opacity:.92; font-weight:500;
+      font-size: clamp(14px, 2.1vw, 20px);
+      text-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+
+    .envelope-wrap{ display:inline-block; position:relative; }
+    .envelope{
+      width:min(84vw, 520px); height:min(56vw, 320px);
+      border-radius:22px; position:relative; cursor:pointer; user-select:none;
+      transform-style:preserve-3d; perspective:1200px;
+      filter: drop-shadow(0 24px 40px rgba(0,0,0,.25));
+    }
+    .env-body{
+      position:absolute; inset:0; border-radius:22px; overflow:hidden;
+      background: linear-gradient(135deg, var(--card), var(--card2));
+    }
+    .env-flap{
+      position:absolute; left:0; right:0; top:0; height:60%;
+      transform-origin: top; border-radius:22px 22px 0 0; overflow:hidden;
+      background: linear-gradient(180deg, #ff6aa6, #ff3e6c 60%);
+      transition: transform .9s cubic-bezier(.2,.9,.15,1);
+    }
+    .env-flap::after{
+      content:""; position:absolute; inset:0; background:conic-gradient(from 225deg at 50% 100%, #ff6aa6 0 90deg, #ff3e6c 0 180deg);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+    .env-bottom{
+      position:absolute; left:0; right:0; bottom:0; height:60%;
+      border-radius:0 0 22px 22px;
+      background: conic-gradient(from 45deg at 50% 0, var(--card2) 0 90deg, var(--card) 0 180deg);
+      clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
+    }
+    .seal{
+      position:absolute; left:50%; top:48%; translate:-50% -50%; z-index:3;
+      width:min(12vw, 100px); aspect-ratio:1; background:#fff; border-radius:999px;
+      display:grid; place-items:center; box-shadow: var(--shadow);
+    }
+    .seal svg{ width:58%; height:58%; }
+    .envelope:hover .seal{ transform: scale(1.03); }
+    .envelope.open .env-flap{ transform: rotateX(-160deg); }
+
+    .floaters{ position:fixed; inset:0; pointer-events:none; z-index:0; }
+    .heart{ position:absolute; width:26px; aspect-ratio:1; opacity:.75; }
+    .heart:before, .heart:after{
+      content:""; position:absolute; width:50%; height:70%; background:var(--heart);
+      border-radius:50% 50% 0 50%; left:25%; top:25%; transform:rotate(45deg);
+      box-shadow: 0 8px 18px rgba(255,0,85,.35);
+    }
+    .heart:after{ transform: rotate(-45deg); left:auto; right:25%; border-radius:50% 50% 50% 0; }
+    @keyframes drift{
+      from{ transform:translateY(100vh) scale(.9) rotate(0deg); }
+      to{ transform:translateY(-20vh) scale(1.2) rotate(360deg); }
+    }
+
+    .modal{
+      position:fixed; inset:0; display:grid; place-items:center;
+      background: radial-gradient(1000px 1000px at 50% -10%, rgba(255,255,255,.9), rgba(255,192,203,.6)) ,
+                  linear-gradient(135deg,#fff1f4,#ffe3ea);
+      opacity:0; visibility:hidden; transition: opacity .45s ease, visibility .45s ease;
+      z-index:10;
+    }
+    .modal.show{ opacity:1; visibility:visible; }
+
+    .letter{
+      width:min(920px, 92vw); height:min(80vh, 760px);
+      background: #fff; color:#333; border-radius:26px; overflow:auto; position:relative;
+      padding: clamp(22px, 3vw, 40px);
+      background: radial-gradient(circle at 10% 10%, rgba(255,113,140,.12) 0 2px, transparent 2px) 0 0 / 26px 26px,
+                  radial-gradient(circle at 80% 30%, rgba(255,113,140,.12) 0 2px, transparent 2px) 0 0 / 30px 30px,
+                  #fffefc;
+      box-shadow: 0 20px 60px rgba(255, 0, 83, .25), 0 6px 18px rgba(0,0,0,.12);
+      transform: translateY(20px) scale(.98);
+      transition: transform .45s ease .05s;
+    }
+    .modal.show .letter{ transform: translateY(0) scale(1); }
+
+    .close{
+      position:fixed; right:18px; top:18px; z-index:11;
+      width:46px; height:46px; border:0; border-radius:999px; cursor:pointer;
+      background: radial-gradient(circle at 30% 30%, #ff7aa8, #ff2d55);
+      color:#fff; font-size:22px; box-shadow: var(--shadow);
+    }
+
+    .letter h2{
+      font-family: "Great Vibes", "Sacramento", cursive;
+      text-align:center; font-size: clamp(42px, 6vw, 80px);
+      color:#ff3e6c; margin: 6px 0 20px; letter-spacing:2px;
+    }
+    .letter p{
+      font-family: "Great Vibes", "Sacramento", cursive;
+      text-align:center; font-size: clamp(22px, 3.4vw, 36px); line-height:1.6; color:#444;
+      margin: 18px auto; max-width: 900px;
+    }
+
+    /* Canvas para confeti de corazones */
+    #burst{ position:fixed; inset:0; pointer-events:none; z-index:9; }
+
+    .footer-note{
+      margin-top:18px; text-align:center; opacity:.7; font-size:13px; color:#333;
+    }
+    .footer-note a{ color:#ff2d55; text-decoration:none; font-weight:600; }
+        
+    .home-btn{
+      display:inline-block; padding:10px 22px; font-size:1rem; font-weight:700; color:#fff;
+      background: linear-gradient(135deg, #ff4f87, #ff2d6a);
+      border-radius: 25px; text-decoration:none; box-shadow:0 8px 18px rgba(0,0,0,.18);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .home-btn:hover{ transform: translateY(-3px) scale(1.05); box-shadow:0 12px 22px rgba(0,0,0,.25); }
+
+    /* Frases flotantes al hacer clic */
+    .phrase{
+      position:fixed; left:0; top:0; transform:translate(-50%,-50%);
+      font-family:"Great Vibes","Sacramento",cursive;
+      font-size:clamp(22px,4vw,42px);
+      color:#ff2d55; text-shadow:0 10px 26px rgba(255,45,106,.35);
+      opacity:0; pointer-events:none; z-index:11;
+      animation: floatFade 1.6s ease forwards;
+    }
+    @keyframes floatFade{
+      0%{ transform:translate(-50%,-50%) translateY(10px) scale(.9); opacity:0; }
+      10%{ opacity:1; }
+      80%{ opacity:1; }
+      100%{ transform:translate(-50%,-50%) translateY(-60px) scale(1.05); opacity:0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Música (si la usas). En móvil se desbloquea con el primer toque más abajo -->
+  <audio id="bg-music" autoplay loop>
+    <source src="ordinary.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
+
+  <div class="floaters" id="floaters"></div>
+  <canvas id="burst"></canvas>
+
+  <main class="hero">
+    <div style="text-align:center; margin-bottom:20px;">
+      <a href="sorpresa.html" class="home-btn">Regresar</a>
+    </div>
+    <div class="hero-inner">
+      <h1 class="title-gradient">Para ti mi Sandy</h1>
+      <p class="subtitle">Abre la carta bebé</p>
+
+      <div class="envelope-wrap">
+        <div class="envelope" id="envelope" aria-label="Abrir carta" role="button" tabindex="0">
+          <div class="env-body"></div>
+          <div class="env-flap" id="flap"></div>
+          <div class="env-bottom"></div>
+          <div class="seal" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 6.7c1.9-2.2 6.7-1.8 6.7 2.4 0 3.6-5.6 7.6-6.7 8.3-1.1-.7-6.7-4.7-6.7-8.3 0-4.2 4.8-4.7 6.7-2.4Z" fill="#ff2d55"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <p class="footer-note">Te amo mucho mi amor</p>
+    </div>
+  </main>
+
+  <div class="modal" id="modal">
+    <button class="close" id="close" aria-label="Cerrar">✕</button>
+    <article class="letter" aria-live="polite">
+      <h2>Mi Sandy</h2>
+      <p>Todas las palabras que pueda decir se quedan cortas ante lo que realmente siento por ti, mi amor.</p>
+
+  <p>Estoy profundamente agradecido contigo por enseñarme tantas cosas,  
+     por soportarme en mis días difíciles, por estar siempre conmigo,  
+     y por quererme a pesar de todo.</p>
+
+  <p>Gracias por mostrarme lo bonito que puede ser la vida,  
+     por absolutamente todo lo que haces por mí.  
+     Siempre estaré agradecido contigo, amor.</p>
+
+  <p>Eres el amor de mi vida, y siempre te lo voy a repetir,  
+     hasta que seamos viejitos y sigamos caminando de la mano.</p>
+
+  <p>Recuerdo con tanto cariño la primera vez que nos saludamos…  
+     yo estaba super nervioso, y aun así, en ese instante supe  
+     que algo muy especial estaba empezando en mi vida.</p>
+
+  <p>Quiero estar contigo toda mi vida, mi Sandy ❤️.  
+     Estos 5 meses han sido los más bonitos y especiales de mi vida,  
+     y lo único que deseo es que sigamos para siempre juntos,  
+     construyendo sueños, compartiendo risas y superando todo de la mano.</p>
+
+  <p>Te amo muchísimo, mi amor,  
+     te amo 3 millones, bebé ❤️.  
+     Te amo con todo lo que soy, mi Sandy 💕</p>
+      <p id="fecha-carta" style="font-size:16px; opacity:.7; margin-top:18px;"></p>
+    <p style="margin-top:10px">— Kevin</p>
+
+    </article>
+  </div>
+
+  <script>
+    (function(){
+  const el = document.getElementById('fecha-carta');
+  if(!el) return;
+  const fecha = new Date();
+  const f = fecha.toLocaleDateString('es-PE', { day:'2-digit', month:'long', year:'numeric' });
+  el.textContent = `Trujillo, ${f}`;
+})();
+    // ===== Corazones flotantes de fondo (DOM) =====
+    const floaters = document.getElementById('floaters');
+    const vw = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = () => Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+    function spawnFloatingHearts(){
+      floaters.innerHTML = '';
+      const COUNT = 16; // más liviano
+      for(let i=0;i<COUNT;i++){
+        const h = document.createElement('div');
+        h.className = 'heart';
+        const size = 15 + Math.random()*12; // 15–27px
+        h.style.width = size+'px';
+        h.style.left = Math.random()*vw()+'px';
+        h.style.top  = Math.random()*vh()+'px'; // por toda la pantalla
+        const dur = 20 + Math.random()*18;
+        const delay = -Math.random()*dur;
+        h.style.animation = `drift ${dur}s linear ${delay}s infinite`;
+        h.style.opacity = 0.40 + Math.random()*0.35;
+        floaters.appendChild(h);
+      }
+    }
+    spawnFloatingHearts();
+    window.addEventListener('resize', spawnFloatingHearts);
+
+    // ===== Canvas de corazones (clic/estallido) =====
+    const burst = document.getElementById('burst');
+    const ctx = burst.getContext('2d');
+    let particles = [];
+    let animating=false;
+
+    function resizeCanvas(){
+      burst.width = window.innerWidth;
+      burst.height = window.innerHeight;
+    }
+    resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+
+    function heartPath(ctx, x, y, s){
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.beginPath();
+      ctx.moveTo(0, -2);
+      ctx.bezierCurveTo(2, -5, 7, -3, 7, 1);
+      ctx.bezierCurveTo(7, 5, 2, 8, 0, 11);
+      ctx.bezierCurveTo(-2, 8, -7, 5, -7, 1);
+      ctx.bezierCurveTo(-7, -3, -2, -5, 0, -2);
+      ctx.closePath();
+      ctx.restore();
+    }
+
+    function createBurst(x, y){
+      const N = 60; // puedes bajar a 40 si quieres más sutil
+      for(let i=0;i<N;i++){
+        const angle = (Math.PI*2) * Math.random();
+        const speed = (1.0 + Math.random()*2.2);
+        particles.push({
+          x, y,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed - (0.6 + Math.random()*0.6),
+          life: 160 + Math.random()*120,
+          size: (2 + Math.random()*4),   // corazones pequeños
+          rot: Math.random()*Math.PI*2,
+          vr: (Math.random()-.5)*0.18,
+          color: `hsl(${330 + Math.random()*30} 90% ${60+Math.random()*20}%)`
+        });
+      }
+      if(!animating) animate();
+    }
+
+    function animate(){
+      animating=true;
+      ctx.clearRect(0,0,burst.width, burst.height);
+      particles.forEach(p=>{
+        p.vy += 0.05;
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life--;
+        ctx.save();
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = p.color; ctx.beginPath();
+        heartPath(ctx, 0, 0, p.size/12);
+        ctx.fill(); ctx.restore();
+      });
+      particles = particles.filter(p=> p.life>0 && p.y < burst.height+40);
+      if(particles.length){ requestAnimationFrame(animate); } else { animating=false; }
+    }
+
+    // ===== Modal & Sobre =====
+    const modal = document.getElementById('modal');
+    const closeBtn = document.getElementById('close');
+    const envelope = document.getElementById('envelope');
+
+    function openLetter(){
+      if(envelope.classList.contains('open')) return;
+      const rect = envelope.getBoundingClientRect();
+      envelope.classList.add('open');
+      // Estallido desde el sello
+      const x = rect.left + rect.width/2; const y = rect.top + rect.height*0.46;
+      createBurst(x, y);
+      setTimeout(()=> modal.classList.add('show'), 650);
+    }
+
+    function closeLetter(){
+      modal.classList.remove('show');
+      setTimeout(()=> envelope.classList.remove('open'), 200);
+    }
+
+    // Evita el bubble para que el clic en el sobre NO dispare el listener global
+    envelope.addEventListener('click', (e)=>{ e.stopPropagation(); openLetter(); });
+    envelope.addEventListener('keypress', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openLetter(); }});
+    closeBtn.addEventListener('click', (e)=>{ e.stopPropagation(); closeLetter(); });
+    modal.addEventListener('click', e=>{ if(e.target === modal) closeLetter(); });
+
+    // ===== Frases románticas =====
+    const frases = [
+      "Te amo","Mi vida","Mi cielo","Mi princesa","Siempre tú",
+      "Contigo todo","Eres mi paz","Para siempre","Tú y yo","Amor eterno"
+    ];
+
+    function showPhrase(x,y){
+      const span = document.createElement('span');
+      span.className = 'phrase';
+      span.textContent = frases[Math.floor(Math.random()*frases.length)];
+      span.style.left = x + 'px';
+      span.style.top  = y + 'px';
+      span.style.transform += ` rotate(${(-10 + Math.random()*20)}deg)`;
+      document.body.appendChild(span);
+      span.addEventListener('animationend', ()=> span.remove());
+    }
+
+    // ===== Listener global (sin duplicados) =====
+    document.addEventListener('click', (e)=>{
+      if (
+        e.target.closest('.envelope') || // el sobre ya dispara su estallido
+        e.target.closest('.letter')   || // dentro de la carta no disparamos
+        e.target.closest('.close')    || // botón cerrar
+        e.target.closest('.home-btn')    // botón "Regresar"
+      ) return;
+
+      createBurst(e.clientX, e.clientY);
+      showPhrase(e.clientX, e.clientY);
+    }, {passive:true});
+
+    // ===== Desbloqueo de música en móvil (solo 1 vez) =====
+    document.addEventListener('click', () => {
+      const audio = document.getElementById('bg-music');
+      if (audio && audio.paused) audio.play().catch(()=>{});
+    }, { once: true });
+  </script>
+</body>
+</html>

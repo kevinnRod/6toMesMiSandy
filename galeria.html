@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Galería</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root{ --pink1:#ffd1e3; --pink2:#ffc0d6; --accent:#ff2d6a; --deep:#7a1c6b; --card:#fff5f8; --ink:#5a2452; }
+    *{ box-sizing: border-box }
+    html,body{ height:100% }
+    body{
+      margin:0; color:#6b3063; font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial;
+      background: radial-gradient(1000px 1000px at 10% 10%, #ffe4ee 0%, transparent 60%),
+                  radial-gradient(1200px 1200px at 90% 20%, #ffe8ef 0%, transparent 60%),
+                  linear-gradient(135deg, var(--pink1), var(--pink2));
+      overflow-y:auto; overflow-x:hidden;
+    }
+
+    .container{ max-width:1200px; margin:0 auto; padding: clamp(16px, 4vw, 36px) }
+
+    /* ===== Hero ===== */
+    .hero{ text-align:center; padding: clamp(18px,5vw,32px) 0 10px; position:relative }
+    .hero h1{
+      --grad: linear-gradient(90deg, #ff4f87 0%, #ff2d6a 40%, #b72c7e 85%);
+      margin:0; font-weight:900; letter-spacing:.6px; font-size: clamp(32px, 6.4vw, 58px);
+      background: var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      filter: drop-shadow(0 10px 24px rgba(183,44,126,.25));
+    }
+    .hero .sub{ margin:.4rem 0 0; font-weight:700; color:#5a2452; opacity:.9 }
+
+    /* ===== Navtabs ===== */
+    .tabs-wrap{ display:grid; place-items:center; margin: 10px 0 18px; }
+    .tabs{ display:flex; gap:10px; overflow:auto; padding:8px; width:min(95vw, 1100px); background:rgba(255,255,255,.75); backdrop-filter: blur(8px); border-radius:20px; box-shadow:0 10px 24px rgba(0,0,0,.12), inset 0 0 0 1px rgba(183,44,126,.12); }
+    .tabs::-webkit-scrollbar{ display:none }
+    .tab{ text-decoration:none; color:#b72c7e; font-weight:800; padding:10px 16px; border-radius:999px; border:1px solid transparent; white-space:nowrap; }
+    .tab:hover{ background: rgba(255,255,255,.95) }
+    .tab.is-active{ color:#fff; background: linear-gradient(135deg,#ff4f87,#ff2d6a); box-shadow: 0 10px 18px rgba(183,44,126,.35) }
+
+    /* ===== Galería estilo Insta ===== */
+    .gallery{ display:grid; gap: clamp(12px, 2vw, 18px); grid-template-columns: repeat( auto-fit, minmax(220px, 1fr) ); }
+
+    .post{ background: var(--card); border-radius: 22px; overflow:hidden; box-shadow: 0 16px 32px rgba(122,28,107,.18), inset 0 0 0 1px rgba(183,44,126,.08); transition: transform .25s, box-shadow .25s }
+    .post:hover{ transform: translateY(-3px); box-shadow: 0 22px 44px rgba(122,28,107,.22), inset 0 0 0 1px rgba(183,44,126,.1) }
+
+    .media{ position:relative; aspect-ratio: 1/1; background: #f8e7f0; }
+    .media img{ width:100%; height:100%; object-fit:cover; display:block; cursor: zoom-in; }
+    .badge{ position:absolute; left:10px; top:10px; display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background: rgba(0,0,0,.35); color:#fff; font-weight:800; text-shadow:0 3px 10px rgba(0,0,0,.35) }
+
+    .footer{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px 12px }
+    .actions{ display:flex; gap:12px; align-items:center }
+    .btn{ display:inline-flex; align-items:center; gap:8px; border:0; background:transparent; color:#b03583; font-weight:800; cursor:pointer; padding:8px 10px; border-radius:12px; }
+    .btn:hover{ background: rgba(255,255,255,.75) }
+    .btn svg{ width:20px; height:20px; display:block }
+    .liked{ color:#ff2d6a }
+
+    .caption{ font-size:.92rem; color:#6b3063; font-weight:700; opacity:.9; padding:0 12px 12px }
+
+    /* ===== Lightbox ===== */
+    .lightbox{ position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:50; }
+    .lightbox.open{ display:flex }
+    .viewer{ position:relative; width:min(92vw, 980px); max-height:90vh; background:#0e0b12; border-radius:22px; box-shadow: 0 30px 60px rgba(0,0,0,.45); overflow:hidden; display:grid; grid-template-rows: 1fr 56px }
+    .stage{ position:relative; min-height:0; display:flex; align-items:center; justify-content:center; background:#000 }
+    .viewer img{ max-width:100%; max-height:100%; object-fit:contain; background:#000; display:block }
+    .bar{ display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:rgba(255,255,255,.06); color:#fff }
+    .bar .left, .bar .right{ display:flex; align-items:center; gap:12px }
+    .lb-btn{ display:inline-flex; align-items:center; gap:8px; color:#fff; background:transparent; border:0; cursor:pointer; padding:8px 10px; border-radius:10px }
+    .lb-btn:hover{ background: rgba(255,255,255,.1) }
+    .nav{ position:absolute; top:50%; transform:translateY(-50%); left:0; right:0; display:flex; justify-content:space-between; pointer-events:none }
+    .nav button{ pointer-events:auto; border:0; width:46px; height:46px; border-radius:14px; background:rgba(255,255,255,.85); color:#b72c7e; font-weight:900; box-shadow:0 12px 24px rgba(0,0,0,.35); cursor:pointer }
+    .close{ position:absolute; top:10px; right:10px; border:0; width:40px; height:40px; border-radius:999px; background:rgba(255,255,255,.92); color:#b72c7e; font-weight:900; box-shadow:0 12px 24px rgba(0,0,0,.35); cursor:pointer }
+
+    /* A11y helpers */
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <h1>Galería</h1>
+      <p class="sub">Nuestros momentos favoritos, en estilo Insta 💖</p>
+    </header>
+
+    <!-- NAVTABS -->
+    <div class="tabs-wrap">
+      <nav class="tabs" aria-label="Navegación de sorpresas">
+        <a class="tab" href="sorpresa.html">Este mes</a>
+        <a class="tab" href="poster-6-meses.html">Poster 6 meses</a>
+        <a class="tab" href="sistema-solar.html">Sistema solar</a>
+        <a class="tab" href="galeria.html">Galería de fotos</a>
+        <a class="tab" href="carta.html">Carta</a>
+      </nav>
+    </div>
+
+    <section class="gallery" id="gallery" aria-label="Galería de fotos"></section>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="viewer">
+      <div class="stage"><img id="lb-img" alt="Vista ampliada" /></div>
+      <div class="nav">
+        <button id="lb-prev" aria-label="Anterior">⟵</button>
+        <button id="lb-next" aria-label="Siguiente">⟶</button>
+      </div>
+      <button class="close" id="lb-close" aria-label="Cerrar">✕</button>
+      <div class="bar">
+        <div class="left">
+          <button class="lb-btn" id="lb-like" aria-label="Me gusta">
+            <!-- Heart icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.1 8.64l-.1.1-.11-.11C10.14 6.82 7.1 7.14 5.6 9.05c-1.3 1.66-1.05 4.05.57 5.47L12 20l5.83-5.48c1.62-1.42 1.87-3.8.57-5.47-1.5-1.9-4.54-2.23-6.3-.41z"/></svg>
+            <span id="lb-like-count">0</span>
+          </button>
+          <div class="lb-btn" id="lb-comments">
+            <!-- Comment icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4a2 2 0 00-2 2v14l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>
+            <span id="lb-comment-count">0</span>
+          </div>
+        </div>
+        <div class="right"><span id="lb-caption"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+(() => {
+  // Marcar pestaña activa (evitar colisión de nombres con el índice del lightbox)
+  const tabs = document.querySelectorAll('.tabs .tab');
+  const activePage = (location.pathname.split('/').pop() || 'galeria.html').toLowerCase();
+  tabs.forEach(a => {
+    const href = (a.getAttribute('href') || '').toLowerCase();
+    a.classList.toggle('is-active', href === activePage);
+  });
+
+  const GALLERY_DIR = 'galeria';
+  const TOTAL = 21;
+  const grid = document.getElementById('gallery');
+
+  // ====== LocalStorage helpers ======
+  function keyLikes(src){ return 'gal_like_' + src; }
+  function keyLiked(src){ return 'gal_liked_' + src; }
+  function keyComments(src){ return 'gal_comments_' + src; }
+
+  function getLikes(src){ return parseInt(localStorage.getItem(keyLikes(src)) || '0', 10); }
+  function setLikes(src, n){ localStorage.setItem(keyLikes(src), String(n)); }
+  function getLiked(src){ return localStorage.getItem(keyLiked(src)) === '1'; }
+  function setLiked(src, v){ localStorage.setItem(keyLiked(src), v ? '1' : '0'); }
+  function getComments(src){ try { return JSON.parse(localStorage.getItem(keyComments(src)) || '[]'); } catch { return []; } }
+  function setComments(src, arr){ localStorage.setItem(keyComments(src), JSON.stringify(arr || [])); }
+
+  // Seed inicial bonito
+  function seedCounts(i, src){
+    if (localStorage.getItem(keyLikes(src)) == null) {
+      const seeded = Math.abs(Math.floor(12 + ((Math.sin(i) * 8) + i * 1.7) % 40));
+      setLikes(src, seeded);
+    }
+    if (localStorage.getItem(keyComments(src)) == null) {
+      const n = (i % 3 === 0) ? 2 : (i % 5 === 0) ? 1 : 0;
+      setComments(src, Array.from({length: n}, (_,k) => ({ t: Date.now()-k*86400000, msg: '❤' })));
+    }
+  }
+
+  // ====== Construcción de cards ======
+  const posts = [];
+  for (let i = 1; i <= TOTAL; i++) {
+    const src = `${GALLERY_DIR}/${i}.jpeg`;
+    seedCounts(i, src);
+    const likes = getLikes(src);
+    const comments = getComments(src);
+
+    const card = document.createElement('article');
+    card.className = 'post';
+    card.innerHTML = `
+      <div class="media"><img loading="lazy" src="${src}" alt="Foto ${i}" data-idx="${i-1}"></div>
+      <div class="footer">
+        <div class="actions">
+          <button class="btn btn-like" data-src="${src}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.1 8.64l-.1.1-.11-.11C10.14 6.82 7.1 7.14 5.6 9.05c-1.3 1.66-1.05 4.05.57 5.47L12 20l5.83-5.48c1.62-1.42 1.87-3.8.57-5.47-1.5-1.9-4.54-2.23-6.3-.41z"/></svg>
+            <span class="like-count">${likes}</span>
+          </button>
+          <div class="btn btn-comments" data-src="${src}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4a2 2 0 00-2 2v14l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>
+            <span class="comment-count">${comments.length}</span>
+          </div>
+        </div>
+        <button class="btn btn-open" data-idx="${i-1}">Ver foto</button>
+      </div>
+      <div class="caption"></div>
+    `;
+    grid.appendChild(card);
+    posts.push({ src, card });
+  }
+
+  // ====== Likes en grid ======
+  grid.addEventListener('click', (e) => {
+    const b = e.target.closest('.btn-like');
+    if (!b) return;
+    const src = b.getAttribute('data-src');
+    const liked = getLiked(src);
+    let likes = getLikes(src);
+    if (liked) {
+      likes = Math.max(0, likes - 1);
+      setLiked(src, false);
+      b.classList.remove('liked');
+    } else {
+      likes += 1;
+      setLiked(src, true);
+      b.classList.add('liked');
+    }
+    setLikes(src, likes);
+    const countEl = b.querySelector('.like-count');
+    if (countEl) countEl.textContent = String(likes);
+  });
+
+  // ====== Lightbox ======
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbLike = document.getElementById('lb-like');
+  const lbLikeCount = document.getElementById('lb-like-count');
+  const lbCommentCount = document.getElementById('lb-comment-count');
+  const lbCaption = document.getElementById('lb-caption');
+  const lbPrev = document.getElementById('lb-prev');
+  const lbNext = document.getElementById('lb-next');
+  const lbClose = document.getElementById('lb-close');
+
+  // Índice actual del lightbox (no colisiona con activePage)
+  let current = 0;
+
+  function openAt(i) {
+    current = (i + posts.length) % posts.length;
+    const { src } = posts[current];
+    lbImg.src = src;
+    lbImg.alt = `Foto ${current+1}`;
+    lbCaption.textContent = `Foto ${current+1}`;
+    lbLike.dataset.src = src;
+    lbLike.classList.toggle('liked', getLiked(src));
+    lbLikeCount.textContent = String(getLikes(src));
+    lbCommentCount.textContent = String(getComments(src).length);
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLB() {
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = 'auto';
+  }
+
+  // Abrir desde imagen o botón
+  grid.addEventListener('click', (e) => {
+    const img = e.target.closest('.media img');
+    if (img && img.dataset.idx != null) {
+      openAt(parseInt(img.dataset.idx, 10));
+      return;
+    }
+    const btn = e.target.closest('.btn-open');
+    if (btn) {
+      openAt(parseInt(btn.getAttribute('data-idx'), 10));
+    }
+  });
+
+  // Cerrar / navegar
+  lbClose.addEventListener('click', closeLB);
+  lb.addEventListener('click', (e) => { if (e.target === lb) closeLB(); });
+  lbPrev.addEventListener('click', () => openAt(current - 1));
+  lbNext.addEventListener('click', () => openAt(current + 1));
+  window.addEventListener('keydown', (e) => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLB();
+    if (e.key === 'ArrowLeft') openAt(current - 1);
+    if (e.key === 'ArrowRight') openAt(current + 1);
+  });
+
+  // Like desde lightbox
+  lbLike.addEventListener('click', () => {
+    const src = lbLike.dataset.src;
+    const liked = getLiked(src);
+    let likes = getLikes(src);
+    if (liked) {
+      likes = Math.max(0, likes - 1);
+      setLiked(src, false);
+      lbLike.classList.remove('liked');
+    } else {
+      likes += 1;
+      setLiked(src, true);
+      lbLike.classList.add('liked');
+    }
+    setLikes(src, likes);
+    lbLikeCount.textContent = String(likes);
+    const cardBtn = document.querySelector(`.btn-like[data-src="${src}"]`);
+    if (cardBtn) {
+      const ce = cardBtn.querySelector('.like-count');
+      if (ce) ce.textContent = String(likes);
+      cardBtn.classList.toggle('liked', getLiked(src));
+    }
+  });
+
+  /* ===== DEV sanity checks (no afectan UI) ===== */
+  console.assert(document.getElementById('gallery'), 'Gallery grid should exist');
+  console.assert(typeof activePage === 'string', 'activePage should be a string');
+})();
+</script>
+</body>
+</html>
